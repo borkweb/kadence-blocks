@@ -24,7 +24,7 @@ import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';
 import './blocks/count-up/block.js';
 import './blocks/row-layout/block.js';
-import './blocks/column/block.js';
+import './blocks/column/index.js';
 import './blocks/icon/block.js';
 import './blocks/advanced-heading/block.js';
 import './blocks/tabs/block.js';
@@ -45,7 +45,8 @@ import './blocks/countdown/countdown-inner/block.js';
 /* block.json styles */
 import './blocks/lottie/index.js';
 import './blocks/image/index.js';
-import './blocks/block-template/index.js';
+import './blocks/google-maps/index.js';
+import './blocks/show-more/index.js';
 
 
 // import './plugins/kadence-control.js';

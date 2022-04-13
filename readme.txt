@@ -2,9 +2,9 @@
 Contributors: britner, oakesjosh
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 5.8
+Requires at least: 5.9
 Tested up to: 5.9
-Stable tag: 2.2.10
+Stable tag: 2.4.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ See Kadence Blocks in action with [the live Demo Testing](https://www.kadencewp.
 * Row Layout - Create rows with nested blocks either in columns or as a container. Give style to your rows with a background, overlay, padding, etc. [Learn more](https://www.kadencewp.com/kadence-blocks/row-layout-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
 * Advanced Gallery - Create stunning photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus you can select the image size for performance. [Learn more](https://www.kadencewp.com/kadence-blocks/custom-blocks/advanced-gallery/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
 * Form - Our powerful form block allows you to easily create a contact or marketing form and style it within the block editor. [Learn more](https://www.kadencewp.com/kadence-blocks/form-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
-* Advanced Heading - Transform your headings to Advanced Headings and customize the font family (even Google fonts), color, size, style, and highlight words. [Learn more](https://www.kadencewp.com/kadence-blocks/advanced-heading-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Advanced Text - Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc. [Learn more](https://www.kadencewp.com/kadence-blocks/advanced-heading-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
 * Advanced Button - Create an advanced button or a row of buttons. Style each one, including hover controls. Plus you can use an icon and display them side-by-side. [Learn more](https://www.kadencewp.com/kadence-blocks/advanced-button-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
 * Tabs - Create custom vertical or horizontal tabs with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks. [Learn more](https://www.kadencewp.com/kadence-blocks/tabs-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
 * Accordion - Create beautiful accordions! Each pane is able to contain any other block, customize title styles, content background, and borders. [Learn more](https://www.kadencewp.com/kadence-blocks/accordion-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
@@ -33,6 +33,7 @@ See Kadence Blocks in action with [the live Demo Testing](https://www.kadencewp.
 * Countdown - Increase your conversions by adding a sense of urgency to your offering. Pro includes evergreen campaigns as well. [Learn more](https://www.kadencewp.com/kadence-blocks/countdown-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
 * Posts - Display a clean grid of posts anywhere on your site, great for your homepage where you want to tease your blog. [Learn more](https://www.kadencewp.com/kadence-blocks/custom-blocks/post-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
 * Table of Contents - Allow your readers to navigate your content easily with a table of contents block. Includes smooth scroll to anchor. [Learn more](https://www.kadencewp.com/kadence-blocks/table-of-contents/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Lottie Animation - You can import lottie animations into your site. You can choose how the animation plays and control animation speeds, loops, etc. [Learn more](https://www.kadencewp.com/kadence-blocks/custom-blocks/lottie-animations//?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
 
 = Video Tutorial =
 https://www.youtube.com/watch?v=SYb24ncjVsY
@@ -80,9 +81,55 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 2.2.11 =
-Release Date: February 25th, 2022
-* Fix: issue with separator color.
+= 2.4.3 =
+Release Date: April 11th, 2022
+* Update: Section settings when in row layout vs as a standalone block.
+* Update: Responsive controls issue in widgets.
+* Fix: Possible bug when defining tablet direction in section block.
+* Fix: Issue with image block width when in ratio mode.
+* Fix: Issue with inline styles rendering in rss feed.
+
+= 2.4.2 =
+Release Date: April 8th, 2022
+* Fix: Possible issue with nesting rows inside of flex areas.
+
+= 2.4.1 =
+Release Date: April 8th, 2022
+* Fix: Possible issue where vertically aligning section blocks could break layout.
+
+= 2.4.0 =
+Release Date: April 8th, 2022
+* Add: Section blocks can be used outside of a row for complete flex control layouts.
+* Add: Show More Block.
+* Add: Option for Author link in post block.
+* Add: Option to dynamically source a gallery.
+* Add: Option to set a custom gallery image link to sponsored.
+* Add: Option to have sub lists in icon list block.
+* Add: Tablet and Mobile Max width settings for image block.
+* Add: Min Height and Max Width to section block.
+* Update: Add text transform in info box text and learn more controls.
+* Fix: Issue with Parallax for ipad pro.
+* Fix: Gallery thumbnail size possibly reverting to full when adding new images.
+* Fix: Issue with some lottie files not saving correctly.
+* Fix: Issue with lottie render not setting the correct aria role.
+* Fix: Issue with advanced image block not rendering correctly in flex area.
+* Fix: Issue with useSettings and custom colors.
+* Fix: Issue with alpha color in divider block.
+* Fix: Issue with testimonial name alignment.
+* Fix: CSS specificity issue with divider block.
+* Fix: Issue with relative links and tabs.
+* Fix: Issue with accordion start open changing with preview.
+* Fix: Issue with padding missing in row when options are hidden from user.
+* Fix: Issue with icons list grid gap.
+* Fix: Issue with google map filter default level.
+* Fix: Issue with php notice in google map block.
+
+= 2.3.0 =
+Release Date: March 7th, 2022
+* Add: New Google Maps Block.
+* Add: Decimal Spaces option to Count up Block.
+* Fix: Responsive controls and preview in lottie block.
+* Fix: Issue with image block not showing in some situations.
 
 = 2.2.10 =
 Release Date: February 25th, 2022
@@ -162,6 +209,7 @@ Release Date: January 14th, 2022
 * Fix: Tab title incorrectly showing in editor when using only icon mode.
 * Fix: Issue with form submit font unit.
 * Fix: RTL tabs styling issue.
+* Fix: Issue with kbInitMaps is not a function wit Javascript API
 * Fix: Issue with Table of Contents and special characters
 
 = 2.1.19 =

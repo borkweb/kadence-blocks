@@ -28,10 +28,12 @@ import WebfontLoader from '../../components/typography/fontloader';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
+
 /**
  * Internal block libraries
  */
@@ -53,10 +55,7 @@ const {
 	Button,
 	ButtonGroup,
 	Dashicon,
-	PanelBody,
 	RangeControl,
-	Toolbar,
-	TextControl,
 	ToggleControl,
 	SelectControl,
 	Tooltip,
@@ -572,9 +571,10 @@ class KadenceTestimonials extends Component {
 		};
 		const renderTestimonialSettings = ( index ) => {
 			return (
-				<PanelBody
+				<KadencePanelBody
 					title={ __( 'Testimonial', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === itemsCount ? true : false ) }
+					panelName={ 'kb-testimonials-' + index }
 				>
 					<SelectControl
 						label={ __( 'Media Type', 'kadence-blocks' ) }
@@ -614,11 +614,11 @@ class KadenceTestimonials extends Component {
 									max={ 4 }
 								/>
 							) }
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Icon Color', 'kadence-blocks' ) }
-								colorValue={ ( testimonials[ index ].color ? testimonials[ index ].color : '#555555' ) }
-								colorDefault={ '#555555' }
-								onColorChange={ ( value ) => saveTestimonials( { color: value }, index ) }
+								value={ ( testimonials[ index ].color ? testimonials[ index ].color : '#555555' ) }
+								default={ '#555555' }
+								onChange={ ( value ) => saveTestimonials( { color: value }, index ) }
 							/>
 						</Fragment>
 					) }
@@ -632,7 +632,7 @@ class KadenceTestimonials extends Component {
 						min={ 1 }
 						max={ 5 }
 					/>
-				</PanelBody>
+				</KadencePanelBody>
 			);
 		};
 		const renderSettings = (
@@ -1035,7 +1035,9 @@ class KadenceTestimonials extends Component {
 							/>
 						</BlockControls>
 						<InspectorControls>
-							<PanelBody>
+							<KadencePanelBody
+								panelName={ 'kb-testimonials-settings' }
+							>
 								{ this.showSettings( 'layoutSettings' ) && (
 									<SelectControl
 										label={ __( 'Layout', 'kadence-blocks' ) }
@@ -1117,13 +1119,14 @@ class KadenceTestimonials extends Component {
 										/>
 									</Fragment>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 							{ layout && layout === 'carousel' && (
 								<Fragment>
 									{ this.showSettings( 'carouselSettings' ) && (
-										<PanelBody
+										<KadencePanelBody
 											title={ __( 'Carousel Settings', 'kadence-blocks' ) }
 											initialOpen={ false }
+											panelName={ 'kb-testimonials-carousel'}
 										>
 											<ToggleControl
 												label={ __( 'Carousel Auto Play', 'kadence-blocks' ) }
@@ -1217,14 +1220,15 @@ class KadenceTestimonials extends Component {
 												value={ dotStyle }
 												onChange={ ( value ) => setAttributes( { dotStyle: value } ) }
 											/>
-										</PanelBody>
+										</KadencePanelBody>
 									) }
 								</Fragment>
 							) }
 							{ this.showSettings( 'containerSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Container Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-container-settings' }
 								>
 									<div className="kt-spacer-sidebar-15"></div>
 									<MeasurementControls
@@ -1245,19 +1249,19 @@ class KadenceTestimonials extends Component {
 										min={ 0 }
 										max={ 200 }
 									/>
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Container Background', 'kadence-blocks' ) }
-										colorValue={ ( containerBackground ? containerBackground : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { containerBackground: value } ) }
+										value={ ( containerBackground ? containerBackground : '' ) }
+										default={ '' }
+										onChange={ value => setAttributes( { containerBackground: value } ) }
 										opacityValue={ containerBackgroundOpacity }
 										onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 									/>
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Container Border', 'kadence-blocks' ) }
-										colorValue={ ( containerBorder ? containerBorder : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { containerBorder: value } ) }
+										value={ ( containerBorder ? containerBorder : '' ) }
+										default={ '' }
+										onChange={ value => setAttributes( { containerBorder: value } ) }
 										opacityValue={ containerBorderOpacity }
 										onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 									/>
@@ -1328,12 +1332,13 @@ class KadenceTestimonials extends Component {
 											</ButtonGroup>
 										</div>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'iconSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Icon Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-icon-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Top Icon', 'kadence-blocks' ) }
@@ -1368,11 +1373,11 @@ class KadenceTestimonials extends Component {
 													max={ 4 }
 												/>
 											) }
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Color', 'kadence-blocks' ) }
-												colorValue={ ( iconStyles[ 0 ].color ? iconStyles[ 0 ].color : '' ) }
-												colorDefault={ '' }
-												onColorChange={ ( value ) => saveIconStyles( { color: value } ) }
+												value={ ( iconStyles[ 0 ].color ? iconStyles[ 0 ].color : '' ) }
+												default={ '' }
+												onChange={ ( value ) => saveIconStyles( { color: value } ) }
 											/>
 											<div className="kt-spacer-sidebar-15"></div>
 											<MeasurementControls
@@ -1393,20 +1398,20 @@ class KadenceTestimonials extends Component {
 												min={ 0 }
 												max={ 200 }
 											/>
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Icon Background', 'kadence-blocks' ) }
-												colorValue={ ( iconStyles[ 0 ].background ? iconStyles[ 0 ].background : '' ) }
-												colorDefault={ '' }
-												onColorChange={ value => saveIconStyles( { background: value } ) }
+												value={ ( iconStyles[ 0 ].background ? iconStyles[ 0 ].background : '' ) }
+												default={ '' }
+												onChange={ value => saveIconStyles( { background: value } ) }
 												opacityValue={ iconStyles[ 0 ].backgroundOpacity }
 												onOpacityChange={ value => saveIconStyles( { backgroundOpacity: value } ) }
 												onArrayChange={ ( color, opacity ) => saveIconStyles( { background: color, backgroundOpacity: opacity } ) }
 											/>
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Icon Border Color', 'kadence-blocks' ) }
-												colorValue={ ( iconStyles[ 0 ].border ? iconStyles[ 0 ].border : '' ) }
-												colorDefault={ '' }
-												onColorChange={ value => saveIconStyles( { border: value } ) }
+												value={ ( iconStyles[ 0 ].border ? iconStyles[ 0 ].border : '' ) }
+												default={ '' }
+												onChange={ value => saveIconStyles( { border: value } ) }
 												opacityValue={ iconStyles[ 0 ].borderOpacity }
 												onOpacityChange={ value => saveIconStyles( { borderOpacity: value } ) }
 												onArrayChange={ ( color, opacity ) => saveIconStyles( { border: color, borderOpacity: opacity } ) }
@@ -1434,12 +1439,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'titleSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Title Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-title-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Title', 'kadence-blocks' ) }
@@ -1448,11 +1454,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayTitle && (
 										<Fragment>
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Color Settings', 'kadence-blocks' ) }
-												colorValue={ ( titleFont[ 0 ].color ? titleFont[ 0 ].color : '' ) }
-												colorDefault={ '' }
-												onColorChange={ value => saveTitleFont( { color: value } ) }
+												value={ ( titleFont[ 0 ].color ? titleFont[ 0 ].color : '' ) }
+												default={ '' }
+												onChange={ value => saveTitleFont( { color: value } ) }
 											/>
 											<TypographyControls
 												fontGroup={ 'heading' }
@@ -1518,12 +1524,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'ratingSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Rating Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-rating-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Rating', 'kadence-blocks' ) }
@@ -1532,11 +1539,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayRating && (
 										<Fragment>
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Color', 'kadence-blocks' ) }
-												colorValue={ ( ratingStyles[ 0 ].color ? ratingStyles[ 0 ].color : '' ) }
-												colorDefault={ '' }
-												onColorChange={ ( value ) => saveRatingStyles( { color: value } ) }
+												value={ ( ratingStyles[ 0 ].color ? ratingStyles[ 0 ].color : '' ) }
+												default={ '' }
+												onChange={ ( value ) => saveRatingStyles( { color: value } ) }
 											/>
 											<RangeControl
 												label={ __( 'Icon Size', 'kadence-blocks' ) }
@@ -1558,12 +1565,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'contentSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Content Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-content-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Content', 'kadence-blocks' ) }
@@ -1572,11 +1580,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayContent && (
 										<Fragment>
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Color', 'kadence-blocks' ) }
-												colorValue={ ( contentFont[ 0 ].color ? contentFont[ 0 ].color : '' ) }
-												colorDefault={ '' }
-												onColorChange={ value => saveContentFont( { color: value } ) }
+												value={ ( contentFont[ 0 ].color ? contentFont[ 0 ].color : '' ) }
+												default={ '' }
+												onChange={ value => saveContentFont( { color: value } ) }
 											/>
 											<TypographyControls
 												fontSize={ contentFont[ 0 ].size }
@@ -1630,12 +1638,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'mediaSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Media Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-media-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Media', 'kadence-blocks' ) }
@@ -1672,20 +1681,20 @@ class KadenceTestimonials extends Component {
 												min={ 0 }
 												max={ 200 }
 											/>
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Media Background', 'kadence-blocks' ) }
-												colorValue={ ( mediaStyles[ 0 ].background ? mediaStyles[ 0 ].background : '' ) }
-												colorDefault={ '' }
-												onColorChange={ value => savemediaStyles( { background: value } ) }
+												value={ ( mediaStyles[ 0 ].background ? mediaStyles[ 0 ].background : '' ) }
+												default={ '' }
+												onChange={ value => savemediaStyles( { background: value } ) }
 												opacityValue={ mediaStyles[ 0 ].backgroundOpacity }
 												onOpacityChange={ value => savemediaStyles( { backgroundOpacity: value } ) }
 												onArrayChange={ ( color, opacity ) => savemediaStyles( { background: color, backgroundOpacity: opacity } ) }
 											/>
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Media Border Color', 'kadence-blocks' ) }
-												colorValue={ ( mediaStyles[ 0 ].border ? mediaStyles[ 0 ].border : '' ) }
-												colorDefault={ '' }
-												onColorChange={ value => savemediaStyles( { border: value } ) }
+												value={ ( mediaStyles[ 0 ].border ? mediaStyles[ 0 ].border : '' ) }
+												default={ '' }
+												onChange={ value => savemediaStyles( { border: value } ) }
 												opacityValue={ mediaStyles[ 0 ].borderOpacity }
 												onOpacityChange={ value => savemediaStyles( { borderOpacity: value } ) }
 												onArrayChange={ ( color, opacity ) => savemediaStyles( { border: color, borderOpacity: opacity } ) }
@@ -1767,12 +1776,13 @@ class KadenceTestimonials extends Component {
 											) }
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'nameSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Name Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-name-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Name', 'kadence-blocks' ) }
@@ -1781,11 +1791,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayName && (
 										<Fragment>
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Color', 'kadence-blocks' ) }
-												colorValue={ ( nameFont[ 0 ].color ? nameFont[ 0 ].color : '' ) }
-												colorDefault={ '' }
-												onColorChange={ ( value ) => saveNameFont( { color: value } ) }
+												value={ ( nameFont[ 0 ].color ? nameFont[ 0 ].color : '' ) }
+												default={ '' }
+												onChange={ ( value ) => saveNameFont( { color: value } ) }
 											/>
 											<TypographyControls
 												fontSize={ nameFont[ 0 ].size }
@@ -1824,12 +1834,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'occupationSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Occupation Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonails-occupation-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Occupation', 'kadence-blocks' ) }
@@ -1838,11 +1849,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayOccupation && (
 										<Fragment>
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Color', 'kadence-blocks' ) }
-												colorValue={ ( occupationFont[ 0 ].color ? occupationFont[ 0 ].color : '' ) }
-												colorDefault={ '' }
-												onColorChange={ ( value ) => saveOccupationFont( { color: value } ) }
+												value={ ( occupationFont[ 0 ].color ? occupationFont[ 0 ].color : '' ) }
+												default={ '' }
+												onChange={ ( value ) => saveOccupationFont( { color: value } ) }
 											/>
 											<TypographyControls
 												fontSize={ occupationFont[ 0 ].size }
@@ -1881,12 +1892,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'shadowSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Container Shadow', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-container-shadow' }
 								>
 									<ToggleControl
 										label={ __( 'Enable Shadow', 'kadence-blocks' ) }
@@ -1895,11 +1907,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayShadow && (
 										<Fragment>
-											<AdvancedPopColorControl
+											<PopColorControl
 												label={ __( 'Shadow Color', 'kadence-blocks' ) }
-												colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
-												colorDefault={ '' }
-												onColorChange={ value => saveShadow( { color: value } ) }
+												value={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
+												default={ '' }
+												onChange={ value => saveShadow( { color: value } ) }
 												opacityValue={ shadow[ 0 ].opacity }
 												onOpacityChange={ value => saveShadow( { opacity: value } ) }
 												onArrayChange={ ( color, opacity ) => saveShadow( { color: color, opacity: opacity } ) }
@@ -1938,12 +1950,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'wrapperSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Wrapper Padding', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-wrapper-padding' }
 								>
 									<ResponsiveMeasuremenuControls
 										label={ __( 'Wrapper Padding', 'kadence-blocks' ) }
@@ -1962,16 +1975,17 @@ class KadenceTestimonials extends Component {
 										units={ [ 'px', 'em', 'rem', '%' ] }
 										onUnit={ ( value ) => setAttributes( { wrapperPaddingType: value } ) }
 									/>
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							<div className="kt-sidebar-settings-spacer"></div>
 							{ this.showSettings( 'individualSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Individual Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-individual-settings' }
 								>
 									{ renderSettings }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 						</InspectorControls>
 					</Fragment>

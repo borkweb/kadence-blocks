@@ -20,11 +20,15 @@ import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import StepControl from '../../step-control';
 import filter from 'lodash/filter';
+import get from 'lodash/get';
 import KadenceColorOutput from '../../kadence-color-output';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import URLInputControl from '../../components/links/link-control';
 import DynamicTextControl from '../../components/common/dynamic-text-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import MoveItem from './moveItem';
+import KadencePanelBody from '../../components/KadencePanelBody';
+
 /**
  * Import Css
  */
@@ -44,14 +48,11 @@ const {
 const {
 	Component,
 	Fragment,
-	findDOMNode,
 } = wp.element;
 const {
-	PanelBody,
 	RangeControl,
 	ButtonGroup,
 	Tooltip,
-	IconButton,
 	Button,
 	SelectControl,
 } = wp.components;
@@ -59,10 +60,7 @@ const {
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import {
-	plus,
-	chevronUp,
-	chevronDown,
-	close,
+	plus
 } from '@wordpress/icons';
 import {
 	applyFilters,
@@ -78,9 +76,12 @@ class KadenceIconLists extends Component {
 		this.showSettings = this.showSettings.bind( this );
 		this.saveListItem = this.saveListItem.bind( this );
 		this.onSelectItem = this.onSelectItem.bind( this );
-		this.onMove = this.onMove.bind( this );
+		this.onMoveVertical = this.onMoveVertical.bind( this );
+		this.onMoveHorizontal = this.onMoveHorizontal.bind( this );
 		this.onMoveDown = this.onMoveDown.bind( this );
 		this.onMoveUp = this.onMoveUp.bind( this );
+		this.onMoveLeft = this.onMoveLeft.bind( this );
+		this.onMoveRight = this.onMoveRight.bind( this );
 		this.createNewListItem = this.createNewListItem.bind( this );
 		this.setFocusOnNewItem = this.setFocusOnNewItem.bind( this );
 		this.getPreviewSize = this.getPreviewSize.bind( this );
@@ -108,6 +109,7 @@ class KadenceIconLists extends Component {
 							item.padding = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].padding;
 							item.borderWidth = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].borderWidth;
 							item.style = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].style;
+							item.level = get( blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ], 'level', 0)
 							return item;
 						} );
 					} else {
@@ -161,6 +163,7 @@ class KadenceIconLists extends Component {
 			borderWidth: currentItems[ 0 ].borderWidth,
 			padding: currentItems[ 0 ].padding,
 			style: currentItems[ 0 ].style,
+			level: get(currentItems[ 0 ], 'level', 0)
 		} ];
 		const addin = Math.abs( previousIndex + 1 );
 		{
@@ -185,6 +188,7 @@ class KadenceIconLists extends Component {
 						borderWidth: currentItems[ previousIndex ].borderWidth,
 						padding: currentItems[ previousIndex ].padding,
 						style: currentItems[ previousIndex ].style,
+						level: get(currentItems[ previousIndex ], 'level', 0)
 					} );
 				} else if ( n === previousIndex ) {
 					newItems.push( {
@@ -201,6 +205,7 @@ class KadenceIconLists extends Component {
 						borderWidth: currentItems[ previousIndex ].borderWidth,
 						padding: currentItems[ previousIndex ].padding,
 						style: currentItems[ previousIndex ].style,
+						level: get(currentItems[ previousIndex ], 'level', 0)
 					} );
 				} else {
 					if ( n > addin ) {
@@ -220,6 +225,7 @@ class KadenceIconLists extends Component {
 						borderWidth: currentItems[ ind ].borderWidth,
 						padding: currentItems[ ind ].padding,
 						style: currentItems[ ind ].style,
+						level: get(currentItems[ ind ], 'level', 0)
 					} );
 				}
 			} );
@@ -231,7 +237,7 @@ class KadenceIconLists extends Component {
 	};
 	// Silly Hack to handle focus.
 	setFocusOnNewItem( index, uniqueID ) {
-		setTimeout( function(){ 
+		setTimeout( function(){
 			if ( document.querySelector( `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-${ index }` ) ) {
 				const parent = document.querySelector( `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-${ index }` );
 				const rich = parent.querySelector( '.rich-text' );
@@ -248,11 +254,17 @@ class KadenceIconLists extends Component {
 			}
 		};
 	}
-	onMove( oldIndex, newIndex ) {
+	onMoveVertical( oldIndex, newIndex ) {
 		const items = [ ...this.props.attributes.items ];
 		items.splice( newIndex, 1, this.props.attributes.items[ oldIndex ] );
 		items.splice( oldIndex, 1, this.props.attributes.items[ newIndex ] );
 		this.setState( { focusIndex: newIndex } );
+		this.props.setAttributes( { items } );
+	}
+	onMoveHorizontal( index, newLevel ) {
+		const items = [ ...this.props.attributes.items ];
+		items[index].level = newLevel;
+
 		this.props.setAttributes( { items } );
 	}
 
@@ -261,7 +273,7 @@ class KadenceIconLists extends Component {
 			if ( oldIndex === this.props.attributes.items.length - 1 ) {
 				return;
 			}
-			this.onMove( oldIndex, oldIndex + 1 );
+			this.onMoveVertical( oldIndex, oldIndex + 1 );
 		};
 	}
 
@@ -270,9 +282,31 @@ class KadenceIconLists extends Component {
 			if ( oldIndex === 0 ) {
 				return;
 			}
-			this.onMove( oldIndex, oldIndex - 1 );
+			this.onMoveVertical( oldIndex, oldIndex - 1 );
 		};
 	}
+
+	onMoveLeft(index) {
+		return () => {
+			if(this.props.attributes.items[index].level === 0) {
+				return;
+			}
+			this.onMoveHorizontal(index, this.props.attributes.items[index].level - 1);
+		}
+	}
+
+	onMoveRight(index) {
+		return () => {
+			let currentLevel = get( this.props.attributes.items[index], 'level', 0);
+
+			if(currentLevel === 5) {
+				return;
+			}
+
+			this.onMoveHorizontal(index, currentLevel + 1);
+		}
+	}
+
 	showSettings( key ) {
 		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
 			return true;
@@ -379,9 +413,10 @@ class KadenceIconLists extends Component {
 		}
 		const renderIconSettings = ( index ) => {
 			return (
-				<PanelBody
+				<KadencePanelBody
 					title={ __( 'Item', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === listCount ? true : false ) }
+					panelName={ 'kb-icon-item-' + index }
 				>
 					<URLInputControl
 						label={ __( 'Link', 'kadence-blocks' ) }
@@ -429,11 +464,11 @@ class KadenceIconLists extends Component {
 							max={ 4 }
 						/>
 					) }
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Icon Color' ) }
-						colorValue={ ( items[ index ].color ? items[ index ].color : '' ) }
-						colorDefault={ '' }
-						onColorChange={ value => {
+						value={ ( items[ index ].color ? items[ index ].color : '' ) }
+						default={ '' }
+						onChange={ value => {
 							this.saveListItem( { color: value }, index );
 						} }
 					/>
@@ -449,21 +484,21 @@ class KadenceIconLists extends Component {
 						} }
 					/>
 					{ items[ index ].style !== 'default' && (
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ __( 'Icon Background' ) }
-							colorValue={ ( items[ index ].background ? items[ index ].background : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => {
+							value={ ( items[ index ].background ? items[ index ].background : '' ) }
+							default={ '' }
+							onChange={ value => {
 								this.saveListItem( { background: value }, index );
 							} }
 						/>
 					) }
 					{ items[ index ].style !== 'default' && (
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ __( 'Border Color' ) }
-							colorValue={ ( items[ index ].border ? items[ index ].border : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => {
+							value={ ( items[ index ].border ? items[ index ].border : '' ) }
+							default={ '' }
+							onChange={ value => {
 								this.saveListItem( { border: value }, index );
 							} }
 						/>
@@ -501,7 +536,7 @@ class KadenceIconLists extends Component {
 							max={ 180 }
 						/>
 					) }
-				</PanelBody>
+				</KadencePanelBody>
 			);
 		};
 		const renderSettings = (
@@ -516,7 +551,7 @@ class KadenceIconLists extends Component {
 		);
 		const renderIconsPreview = ( index ) => {
 			return (
-				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index }` } >
+				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index } kt-svg-icon-list-level-${ get( items[index], 'level', 0 ) }` } >
 					{ items[ index ].icon && (
 						<IconRender className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } style={ {
 							color: ( items[ index ].color ? KadenceColorOutput( items[ index ].color ) : undefined ),
@@ -572,31 +607,6 @@ class KadenceIconLists extends Component {
 						} }
 						className={ 'kt-svg-icon-list-text' }
 					/>
-					<div className="kadence-blocks-list-item__control-menu">
-						<Button
-							icon="arrow-up"
-							onClick={ index === 0 ? undefined : this.onMoveUp( index ) }
-							className="kadence-blocks-list-item__move-up"
-							label={ __( 'Move Item Up', 'kadence-blocks' ) }
-							aria-disabled={ index === 0 }
-							disabled={ ! this.state.focusIndex === index }
-						/>
-						<Button
-							icon="arrow-down"
-							onClick={ ( index + 1 ) === listCount ? undefined : this.onMoveDown( index ) }
-							className="kadence-blocks-list-item__move-down"
-							label={ __( 'Move Item Down', 'kadence-blocks' ) }
-							aria-disabled={ ( index + 1 ) === listCount }
-							disabled={ ! this.state.focusIndex === index }
-						/>
-						<Button
-							icon="no-alt"
-							onClick={ () => removeListItem( null, index ) }
-							className="kadence-blocks-list-item__remove"
-							label={ __( 'Remove Item', 'kadence-blocks' ) }
-							disabled={ ! this.state.focusIndex === index }
-						/>
-					</div>
 				</div>
 			);
 		};
@@ -608,12 +618,22 @@ class KadenceIconLists extends Component {
 						controls={ [ 'center', 'left', 'right' ] }
 						onChange={ value => setAttributes( { blockAlignment: value } ) }
 					/>
+					<MoveItem
+						onMoveUp={ value => this.onMoveUp( value ) }
+						onMoveDown={ value => this.onMoveDown( value ) }
+						onMoveRight={ value => this.onMoveRight( value ) }
+						onMoveLeft={ value => this.onMoveLeft( value ) }
+						focusIndex={ this.state.focusIndex }
+						itemCount={ this.props.attributes.items.length }
+						level={  get( this.props.attributes.items[ ( this.state.focusIndex ? this.state.focusIndex : 0 ) ], 'level', 0) }
+					/>
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'List Controls' ) }
 							initialOpen={ true }
+							panelName={ 'kb-icon-list-controls' }
 						>
 							<StepControl
 								label={ __( 'Number of Items' ) }
@@ -636,6 +656,7 @@ class KadenceIconLists extends Component {
 												borderWidth: newitems[ 0 ].borderWidth,
 												padding: newitems[ 0 ].padding,
 												style: newitems[ 0 ].style,
+												level: get(newitems[ 0 ], 'level', 0)
 											} );
 										} ); }
 										setAttributes( { items: newitems } );
@@ -713,17 +734,18 @@ class KadenceIconLists extends Component {
 									/>
 								</Fragment>
 							) }
-						</PanelBody>
+						</KadencePanelBody>
 						{ this.showSettings( 'textStyle' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'List Text Styling' ) }
 								initialOpen={ false }
+								panelName={ 'kb-list-text-styling' }
 							>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Color Settings' ) }
-									colorValue={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => {
+									value={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
+									default={ '' }
+									onChange={ value => {
 										saveListStyles( { color: value } );
 									} }
 								/>
@@ -762,12 +784,13 @@ class KadenceIconLists extends Component {
 									textTransform={ listStyles[ 0 ].textTransform }
 									onTextTransform={ ( value ) => saveListStyles( { textTransform: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'joinedIcons' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Edit All Icon Styles Together' ) }
 								initialOpen={ false }
+								panelName={ 'kb-icon-all-styles' }
 							>
 								<p>{ __( 'PLEASE NOTE: This will override individual list item settings.' ) }</p>
 								<IconControl
@@ -799,11 +822,11 @@ class KadenceIconLists extends Component {
 										max={ 4 }
 									/>
 								) }
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Icon Color' ) }
-									colorValue={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => {
+									value={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
+									default={ '' }
+									onChange={ value => {
 										saveAllListItem( { color: value } );
 									} }
 								/>
@@ -819,21 +842,21 @@ class KadenceIconLists extends Component {
 									} }
 								/>
 								{ items[ 0 ].style !== 'default' && (
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Icon Background' ) }
-										colorValue={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => {
+										value={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
+										default={ '' }
+										onChange={ value => {
 											saveAllListItem( { background: value } );
 										} }
 									/>
 								) }
 								{ items[ 0 ].style !== 'default' && (
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Border Color' ) }
-										colorValue={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => {
+										value={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
+										default={ '' }
+										onChange={ value => {
 											saveAllListItem( { border: value } );
 										} }
 									/>
@@ -871,16 +894,17 @@ class KadenceIconLists extends Component {
 										max={ 180 }
 									/>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						<div className="kt-sidebar-settings-spacer"></div>
 						{ this.showSettings( 'individualIcons' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Individual list Item Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-list-individual-item-settings' }
 							>
 								{ renderSettings }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 					</InspectorControls>
 				) }
@@ -932,6 +956,7 @@ class KadenceIconLists extends Component {
 												borderWidth: newitems[ 0 ].borderWidth,
 												padding: newitems[ 0 ].padding,
 												style: newitems[ 0 ].style,
+												level: get(newitems[ 0 ], 'level', 0)
 											} );
 										} ); }
 										setAttributes( { items: newitems } );

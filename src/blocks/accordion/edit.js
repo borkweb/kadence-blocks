@@ -23,10 +23,11 @@ import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import BorderColorControls from '../../border-color-control';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import KadenceRange from '../../components/range/range-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 
 /**
  * Import Css
@@ -39,7 +40,7 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-import { 
+import {
 	InnerBlocks,
 	InspectorControls,
 	BlockControls,
@@ -50,14 +51,13 @@ const {
 	TabPanel,
 	Button,
 	ButtonGroup,
-	PanelBody,
 	Dashicon,
 	RangeControl,
 	ToggleControl,
 	SelectControl,
 	IconButton,
 } = wp.components;
-import { withSelect, withDispatch } from '@wordpress/data';
+import { withSelect, withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 /**
  * Internal block libraries
@@ -115,6 +115,7 @@ class KadenceAccordionComponent extends Component {
 		return desktopSize;
 	}
 	componentDidMount() {
+		// This runs when we switch from desktop to tablet.
 		if ( ! this.props.attributes.uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/accordion' ] !== undefined && typeof blockConfigObject[ 'kadence/accordion' ] === 'object' ) {
@@ -154,6 +155,7 @@ class KadenceAccordionComponent extends Component {
 			} );
 			ktaccordUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( ktaccordUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
+			// This will force a rebuild of the unique ID when preview changes.
 			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
 			ktaccordUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
@@ -427,17 +429,17 @@ class KadenceAccordionComponent extends Component {
 		const classes = classnames( className, `kt-accordion-wrap kt-accordion-id${ uniqueID } kt-accordion-has-${ paneCount }-panes kt-accordion-block kt-pane-header-alignment-${ titleAlignment }` );
 		const normalSettings = (
 			<Fragment>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Title Color', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].color ? titleStyles[ 0 ].color : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { color: value } ) }
+					value={ ( titleStyles[ 0 ].color ? titleStyles[ 0 ].color : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { color: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Title Background', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].background ? titleStyles[ 0 ].background : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { background: value } ) }
+					value={ ( titleStyles[ 0 ].background ? titleStyles[ 0 ].background : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { background: value } ) }
 				/>
 				<BorderColorControls
 					label={ __( 'Title Border Color' ) }
@@ -450,17 +452,17 @@ class KadenceAccordionComponent extends Component {
 		);
 		const hoverSettings = (
 			<Fragment>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Hover Color', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].colorHover ? titleStyles[ 0 ].colorHover : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { colorHover: value } ) }
+					value={ ( titleStyles[ 0 ].colorHover ? titleStyles[ 0 ].colorHover : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { colorHover: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Hover Background', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].backgroundHover ? titleStyles[ 0 ].backgroundHover : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { backgroundHover: value } ) }
+					value={ ( titleStyles[ 0 ].backgroundHover ? titleStyles[ 0 ].backgroundHover : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { backgroundHover: value } ) }
 				/>
 				<BorderColorControls
 					label={ __( 'Hover Border Color' ) }
@@ -473,17 +475,17 @@ class KadenceAccordionComponent extends Component {
 		);
 		const activeSettings = (
 			<Fragment>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Active Color', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].colorActive ? titleStyles[ 0 ].colorActive : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { colorActive: value } ) }
+					value={ ( titleStyles[ 0 ].colorActive ? titleStyles[ 0 ].colorActive : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { colorActive: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Active Background', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].backgroundActive ? titleStyles[ 0 ].backgroundActive : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { backgroundActive: value } ) }
+					value={ ( titleStyles[ 0 ].backgroundActive ? titleStyles[ 0 ].backgroundActive : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { backgroundActive: value } ) }
 				/>
 				<BorderColorControls
 					label={ __( 'Active Border Color' ) }
@@ -606,7 +608,7 @@ class KadenceAccordionComponent extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody>
+						<KadencePanelBody panelName={ 'kb-accordion-all' }>
 							{ this.showSettings( 'paneControl' ) && (
 								<Fragment>
 									<ToggleControl
@@ -634,6 +636,7 @@ class KadenceAccordionComponent extends Component {
 																aria-pressed={ openPane === attributes.id - 1 }
 																onClick={ () => setAttributes( { openPane: attributes.id - 1 } ) }
 															>
+																{ console.log( 'is_array' ) }
 																{ __( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id ) }
 															</Button>
 														) ) }
@@ -660,11 +663,12 @@ class KadenceAccordionComponent extends Component {
 									) }
 								</Fragment>
 							) }
-						</PanelBody>
+						</KadencePanelBody>
 						{ this.showSettings( 'titleColors' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Pane Title Color Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-pane-title-color-settings' }
 							>
 								<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
 									activeClass="active-tab"
@@ -701,12 +705,13 @@ class KadenceAccordionComponent extends Component {
 										}
 									}
 								</TabPanel>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleIcon' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Pane Title Trigger Icon', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-acordion-panel-title-trigger-icon' }
 							>
 								<ToggleControl
 									label={ __( 'Show Icon', 'kadence-blocks' ) }
@@ -741,12 +746,13 @@ class KadenceAccordionComponent extends Component {
 									] }
 									onChange={ value => setAttributes( { iconSide: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleSpacing' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Pane Title Spacing', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-pane-title-spacing' }
 							>
 								{/* <MeasurementControls
 									label={ __( 'Pane Title Padding (px)', 'kadence-blocks' ) }
@@ -795,12 +801,13 @@ class KadenceAccordionComponent extends Component {
 									min={ 1 }
 									max={ 120 }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleBorder' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Pane Title Border', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-pane-title-border' }
 							>
 								<MeasurementControls
 									label={ __( 'Pane Title Border Width (px)', 'kadence-blocks' ) }
@@ -830,12 +837,13 @@ class KadenceAccordionComponent extends Component {
 									thirdIcon={ icons.bottomright }
 									fourthIcon={ icons.bottomleft }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleFont' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Pane Title Font Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-pane-title-font-settings' }
 							>
 								<TypographyControls
 									fontSize={ titleStyles[ 0 ].size }
@@ -872,12 +880,13 @@ class KadenceAccordionComponent extends Component {
 									fontSubset={ titleStyles[ 0 ].subset }
 									onFontSubset={ ( value ) => saveTitleStyles( { subset: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'paneContent' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Inner Content Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-inner-content-settings' }
 							>
 								<ResponsiveMeasuremenuControls
 									label={ __( 'Inner Content Padding', 'kadence-blocks' ) }
@@ -907,17 +916,17 @@ class KadenceAccordionComponent extends Component {
 									units={ [ 'px', 'em', 'rem', '%' ] }
 									onUnit={ ( value ) => setAttributes( { contentPaddingType: value } ) }
 								/>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Inner Content Background', 'kadence-blocks' ) }
-									colorValue={ ( contentBgColor ? contentBgColor : '' ) }
-									colorDefault={ '' }
-									onColorChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
+									value={ ( contentBgColor ? contentBgColor : '' ) }
+									default={ '' }
+									onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
 								/>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Inner Content Border Color', 'kadence-blocks' ) }
-									colorValue={ ( contentBorderColor ? contentBorderColor : '' ) }
-									colorDefault={ '' }
-									onColorChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
+									value={ ( contentBorderColor ? contentBorderColor : '' ) }
+									default={ '' }
+									onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Inner Content Border Width (px)', 'kadence-blocks' ) }
@@ -947,12 +956,13 @@ class KadenceAccordionComponent extends Component {
 									thirdIcon={ icons.bottomright }
 									fourthIcon={ icons.bottomleft }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleTag' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Title Tag Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-title-tag-settings' }
 							>
 								<SelectControl
 									label={ __( 'Title Tag', 'kadence-blocks' ) }
@@ -970,12 +980,13 @@ class KadenceAccordionComponent extends Component {
 										this.setState( { titleTag: value } );
 									} }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'structure' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Structure Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-structure-settings' }
 							>
 								<KadenceRange
 									label={ __( 'Content Minimum Height', 'kadence-blocks' ) }
@@ -1007,7 +1018,7 @@ class KadenceAccordionComponent extends Component {
 										setAttributes( { faqSchema: value } );
 									} }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 					</InspectorControls>
 				) }
