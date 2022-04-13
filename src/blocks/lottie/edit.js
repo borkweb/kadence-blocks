@@ -7,13 +7,13 @@
  */
 import './editor.scss';
 
-import { Player, Controls } from '@lottiefiles/react-lottie-player';
+import * as LottiePlayer from "@lottiefiles/lottie-player";
+import { create } from '@lottiefiles/lottie-interactivity';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 const { rest_url } = kadence_blocks_params;
@@ -27,6 +27,7 @@ const {
 
 const { apiFetch } = wp;
 const {
+	PanelBody,
 	RangeControl,
 	ToggleControl,
 	TextControl,
@@ -43,13 +44,13 @@ import { __experimentalNumberControl as NumberControl } from '@wordpress/compone
  */
 import classnames from 'classnames';
 import KadenceSelectPosts from '../../components/posts/select-posts-control'
-import KadencePanelBody from '../../components/KadencePanelBody'
 const ktlottieUniqueIDs = [];
 
 export function Edit( {
 	attributes,
 	setAttributes,
 	className,
+	previewDevice,
 	clientId,
 } ) {
 
@@ -62,7 +63,6 @@ export function Edit( {
 		loop,
 		onlyPlayOnHover,
 		onlyPlayOnScroll,
-		waitUntilInView,
 		bouncePlayback,
 		playbackSpeed,
 		loopLimit,
@@ -82,9 +82,7 @@ export function Edit( {
 		marginUnit,
 		label,
 	} = attributes;
-	const previewDevice = useSelect( ( select ) => {
-		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
-	}, [] );
+
 	const [ rerenderKey, setRerenderKey ] = useState( 'static' );
 	const [ lottieAnimationsCacheKey, setLottieAnimationsCacheKey ] = useState( { key: Math.random() } );
 
@@ -102,6 +100,7 @@ export function Edit( {
 		}
 		return desktopSize;
 	};
+	const ref = useRef();
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
@@ -121,6 +120,41 @@ export function Edit( {
 		className: classes,
 	} );
 
+	let playerProps = {};
+
+	if(loop){
+		playerProps.loop = '';
+	}
+
+	if(playbackSpeed){
+		playerProps.speed = playbackSpeed;
+	}
+
+	if(showControls){
+		playerProps.controls = '';
+	}
+
+	if(autoplay){
+		playerProps.autoplay = '';
+	}
+
+	if(onlyPlayOnHover){
+		playerProps.hover = '';
+	}
+
+	if(bouncePlayback) {
+		playerProps.mode = 'bounce';
+	} else {
+		playerProps.mode = 'normal';
+	}
+
+	if( delay !== 0){
+		playerProps.intermission = 1000 * delay;
+	}
+
+	if( loopLimit !== 0 ) {
+		playerProps.count = loopLimit;
+	}
 	useEffect( () => {
 		if ( ! uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
@@ -167,7 +201,6 @@ export function Edit( {
 				} ).then( (response) => {
 					if( has(response, 'value') && has(response, 'label') ){
 						setAttributes( { localFile: [ response ], fileSrc: 'local' } );
-						setRerenderKey( Math.random() );
 						setLottieAnimationsCacheKey( Math.random() );
 					} else if ( has(response, 'error') && has(response, 'message')  ) {
 						setLottieJsonError( response.message );
@@ -260,10 +293,9 @@ export function Edit( {
 				/>
 			</BlockControls>
 			<InspectorControls>
-				<KadencePanelBody
+				<PanelBody
 					title={ __('Source File', 'kadence-blocks') }
 					initialOpen={ true }
-					panelName={ 'kb-lottie-source-file' }
 				>
 
 					<SelectControl
@@ -316,12 +348,11 @@ export function Edit( {
 
 
 
-				</KadencePanelBody>
+				</PanelBody>
 
-				<KadencePanelBody
+				<PanelBody
 					title={ __( 'Playback Settings', 'kadence-blocks' ) }
 					initialOpen={ true }
-					panelName={ 'kb-lottie-playback-settings' }
 				>
 					<ToggleControl
 						label={ __( 'Show Controls', 'kadence-blocks' ) }
@@ -335,7 +366,7 @@ export function Edit( {
 						label={ __( 'Autoplay', 'kadence-blocks' ) }
 						checked={ autoplay }
 						onChange={ ( value ) => {
-							setAttributes( { autoplay: value, waitUntilInView: ( value ? waitUntilInView : false ), onlyPlayOnHover: (value ? false : onlyPlayOnHover), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
+							setAttributes( { autoplay: value, onlyPlayOnHover: (value ? false : onlyPlayOnHover), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
 							setRerenderKey( Math.random() );
 						}}
 					/>
@@ -356,8 +387,7 @@ export function Edit( {
 							setRerenderKey( Math.random() );
 						} }
 					/>
-
-					{ onlyPlayOnScroll ?
+					{ onlyPlayOnScroll && (
 						<>
 							<div style={ { marginBottom: '15px'} }>
 								<NumberControl
@@ -367,7 +397,6 @@ export function Edit( {
 									min={ 0 }
 									isShiftStepEnabled={ true }
 									shiftStep={ 10 }
-									help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 								/>
 							</div>
 
@@ -379,21 +408,10 @@ export function Edit( {
 									min={ 0 }
 									isShiftStepEnabled={ true }
 									shiftStep={ 10 }
-									help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 								/>
 							</div>
 						</>
-					 :
-						<div style={ { marginBottom: '15px'} }>
-							<ToggleControl
-							label={ __( 'Don\'t play until in view', 'kadence-blocks' ) }
-							help={ __('Prevent playback from starting until animation is in view', 'kadence-blocks') }
-							checked={ waitUntilInView }
-							onChange={ (value) => { setAttributes( { waitUntilInView: value, autoplay: ( value ? true : autoplay ) } ) } }
-							/>
-						</div>
-					}
-
+					) }
 					<RangeControl
 						label={ __( 'Playback Speed', 'kadence-blocks' ) }
 						value={ playbackSpeed }
@@ -417,36 +435,35 @@ export function Edit( {
 						checked={ bouncePlayback }
 						onChange={ ( value ) => {
 							setAttributes( { bouncePlayback: value, loop: (value ? true : loop), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
+							setRerenderKey( Math.random() );
 						} }
-						help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 					/>
 					<RangeControl
 						label={ __( 'Delay between loops (seconds)', 'kadence-blocks' ) }
 						value={ delay }
 						onChange={ ( value ) => {
 							setAttributes( { delay: value } );
+							setRerenderKey( Math.random() );
 						} }
 						step={ 0.1 }
 						min={ 0 }
 						max={ 60 }
-						help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 					/>
 					<RangeControl
 						label={ __( 'Limit Loops', 'kadence-blocks' ) }
 						value={ loopLimit }
 						onChange={ ( value ) => {
 							setAttributes( { loopLimit: value } );
+							setRerenderKey( Math.random() );
 						} }
 						step={ 1 }
 						min={ 0 }
 						max={ 100 }
-						help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 					/>
-				</KadencePanelBody>
-				<KadencePanelBody
+				</PanelBody>
+				<PanelBody
 					title={ __( 'Size Controls', 'kadence-blocks' ) }
 					initialOpen={ false }
-					panelName={ 'kb-lottie-size' }
 				>
 					<ResponsiveMeasurementControls
 						label={ __( 'Padding', 'kadence-blocks' ) }
@@ -494,7 +511,7 @@ export function Edit( {
 						min={ 25 }
 						max={ 1000 }
 					/>
-				</KadencePanelBody>
+				</PanelBody>
 			</InspectorControls>
 			<div className={ containerClasses } style={
 				{
@@ -509,12 +526,9 @@ export function Edit( {
 					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
 				}
 			}>
-				<Player
-					speed={ undefined !== playbackSpeed ? playbackSpeed : 1 }
-					autoplay={ autoplay ? true : false }
-					count={ loopLimit !== 0 ? loopLimit : 0 }
-					hover={ onlyPlayOnHover ? true : false }
-					loop={ loop ? true : false }
+				<lottie-player
+					ref={ ref }
+					{ ...playerProps }
 					id={ 'kb-lottie-player' + uniqueID }
 					key={ rerenderKey }
 					src={ getAnimationUrl(fileSrc, fileUrl, localFile, rest_url) }
@@ -524,8 +538,7 @@ export function Edit( {
 						margin: '0 auto'
 					} }
 				>
-					<Controls visible={ showControls ? true : false } buttons={['play', 'frame']} />
-				</Player>
+				</lottie-player>
 			</div>
 		</div>
 	);

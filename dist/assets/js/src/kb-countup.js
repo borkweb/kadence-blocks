@@ -1,9 +1,42 @@
-/* global CountUp */
+// let waitForCountUp = setInterval(function () {
+// 	if (typeof countUp !== 'undefined') {
+
+// 		document.querySelectorAll('.kb-count-up').forEach(counter => {
+
+// 			let self = counter,
+// 				start     = self.dataset.start,
+// 				end       = self.dataset.end,
+// 				prefix     = self.dataset.prefix,
+// 				suffix    = self.dataset.suffix,
+// 				duration  = self.dataset.duration,
+// 				seperator = self.dataset.separator,
+// 				el = self.querySelector('.kb-count-up-process');
+
+// 			let KbCounterOptions = {
+// 				startVal: start ? start : 0,
+// 				duration: duration ? duration : 2,
+// 				prefix: prefix ? prefix : '',
+// 				suffix: suffix ? suffix : '',
+// 				separator: seperator ? ',' : ''
+// 			};
+
+// 			let KbCountUp = new countUp.CountUp( el, end, KbCounterOptions);
+
+// 			if (!KbCountUp.error) {
+// 				KbCountUp.start();
+// 			}
+
+// 		});
+
+// 		clearInterval(waitForCountUp);
+// 	}
+// }, 100);
+/* global kadence_blocks_toc */
 /**
  * File kb-countup.js.
  * Gets the countup running in viewport.
  */
- ( function() {
+( function() {
 	'use strict';
 	window.kadenceCountUp = {
 		cache: {},
@@ -32,8 +65,6 @@
 					suffix    = self.dataset.suffix,
 					duration  = self.dataset.duration,
 					separator = self.dataset.separator,
-					decimal   = ( self.dataset.decimal ? self.dataset.decimal : false ),
-					decimalSpaces   = ( self.dataset.decimalSpaces ? self.dataset.decimalSpaces : false ),
 					el = self.querySelector('.kb-count-up-process');
 				let theSeparator = ( separator === 'true' ? ',' : separator );
 				theSeparator = ( theSeparator === 'false' ? '' : theSeparator );
@@ -43,8 +74,6 @@
 					prefix: prefix ? prefix : '',
 					suffix: suffix ? suffix : '',
 					separator: theSeparator,
-					decimal: decimal,
-					decimalPlaces: decimalSpaces,
 				};
 				window.kadenceCountUp.cache[n] = new countUp.CountUp( el, end, KbCounterOptions);
 				// Initialize listener

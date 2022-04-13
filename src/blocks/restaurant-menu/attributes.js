@@ -9,6 +9,10 @@ export default {
 	uniqueID: {
 		type: 'string',
 	},
+	"fullWidth": {
+		"type": "Boolean",
+		"default": false
+	},
 	hAlign: {
 		type: 'string',
 		default: 'center',

@@ -17,6 +17,7 @@ import {
 } from '@wordpress/react-native-bridge';
 import {
 	Icon,
+	PanelBody,
 	ToolbarButton,
 	ToolbarGroup,
 	Image,
@@ -60,7 +61,6 @@ import { store as editPostStore } from '@wordpress/edit-post';
  */
 import styles from './styles.scss';
 import { getUpdatedLinkTargetSettings } from './utils';
-import KadencePanelBody from '../../components/KadencePanelBody';
 
 import {
 	LINK_DESTINATION_CUSTOM,
@@ -564,14 +564,11 @@ export class ImageEdit extends Component {
 
 		const getInspectorControls = () => (
 			<InspectorControls>
-				<KadencePanelBody title={ __( 'Image settings' ) } panelName={ 'kb-image-image-settings' } />
-				<KadencePanelBody
-					style={ styles.panelBody }
-					panelName={ 'kb-image-settings-style' }
-				>
+				<PanelBody title={ __( 'Image settings' ) } />
+				<PanelBody style={ styles.panelBody }>
 					<BlockStyles clientId={ clientId } url={ url } />
-				</KadencePanelBody>
-				<KadencePanelBody panelName={ 'kb-image-size' }>
+				</PanelBody>
+				<PanelBody>
 					{ image && sizeOptionsValid && (
 						<BottomSheetSelectControl
 							icon={ fullscreen }
@@ -582,17 +579,13 @@ export class ImageEdit extends Component {
 						/>
 					) }
 					{ this.getAltTextSettings() }
-				</KadencePanelBody>
-				<KadencePanelBody
-					title={ __( 'Link Settings' ) }
-					panelName={ 'kb-image-link-settings' }
-				>
+				</PanelBody>
+				<PanelBody title={ __( 'Link Settings' ) }>
 					{ this.getLinkSettings( true ) }
-				</KadencePanelBody>
-				<KadencePanelBody
+				</PanelBody>
+				<PanelBody
 					title={ __( 'Featured Image' ) }
 					titleStyle={ styles.featuredImagePanelTitle }
-					panelName={ 'kb-image-featured-image' }
 				>
 					{ canImageBeFeatured &&
 						this.getFeaturedButtonPanel( isFeaturedImage ) }
@@ -604,7 +597,7 @@ export class ImageEdit extends Component {
 							styles.setFeaturedButtonCellContainer
 						}
 					/>
-				</KadencePanelBody>
+				</PanelBody>
 			</InspectorControls>
 		);
 

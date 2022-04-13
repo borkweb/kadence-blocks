@@ -106,8 +106,6 @@ class KadenceCounterUp extends Component {
 			titleMargin,
 			titlePaddingType,
 			titleMarginType,
-			decimal,
-			decimalSpaces,
 		} = attributes
 		const tagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
 
@@ -205,8 +203,6 @@ class KadenceCounterUp extends Component {
 							end={ end }
 							duration={ duration }
 							separator={ theSeparator }
-							decimal={ decimal ? decimal : undefined }
-							decimals={ decimal && decimalSpaces ? decimalSpaces : undefined }
 							prefix={ prefix }
 							suffix={ suffix }
 						/>

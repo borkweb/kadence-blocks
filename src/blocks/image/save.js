@@ -22,7 +22,6 @@ export default function save( { attributes } ) {
 		linkTarget,
 		linkNoFollow,
 		linkSponsored,
-		linkTitle,
 		showCaption,
 		sizeSlug,
 		title,
@@ -89,7 +88,6 @@ export default function save( { attributes } ) {
 						className={ 'kb-advanced-image-link' }
 						target={ linkTarget ? '_blank' : undefined }
 						rel={ relAttr ? relAttr : undefined }
-						aria-label={ linkTitle ? linkTitle : undefined }
 					>
 						{ image }
 					</a>

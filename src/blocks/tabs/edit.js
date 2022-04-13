@@ -21,8 +21,7 @@ import filter from 'lodash/filter';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import KadenceColorOutput from '../../kadence-color-output';
-import KadencePanelBody from '../../components/KadencePanelBody';
-import PopColorControl from '../../components/color/pop-color-control';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
 /**
  * Import Css
  */
@@ -51,6 +50,7 @@ const {
 	TabPanel,
 	IconButton,
 	Dashicon,
+	PanelBody,
 	RangeControl,
 	ToggleControl,
 	SelectControl,
@@ -403,7 +403,7 @@ class KadenceTabs extends Component {
 		];
 		const mobileControls = (
 			<div>
-				<KadencePanelBody panelName={ 'kb-tabs-mobile-controls' } >
+				<PanelBody>
 					<p className="components-base-control__label">{ __( 'Mobile Layout' ) }</p>
 					<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
 						{ map( mLayoutOptions, ( { name, key, icon } ) => (
@@ -421,11 +421,11 @@ class KadenceTabs extends Component {
 							</Tooltip>
 						) ) }
 					</ButtonGroup>
-				</KadencePanelBody>
+				</PanelBody>
 			</div>
 		);
 		const tabletControls = (
-			<KadencePanelBody panelName={ 'kb-tabs-tablet-controls' }>
+			<PanelBody>
 				<p className="components-base-control__label">{ __( 'Tablet Layout' ) }</p>
 				<ButtonGroup aria-label={ __( 'Tablet Layout' ) }>
 					{ map( mLayoutOptions, ( { name, key, icon } ) => (
@@ -443,12 +443,12 @@ class KadenceTabs extends Component {
 						</Tooltip>
 					) ) }
 				</ButtonGroup>
-			</KadencePanelBody>
+			</PanelBody>
 		);
 
 		const deskControls = (
 			<Fragment>
-				<KadencePanelBody panelName={ 'kb-tabs-desktop-controls' }>
+				<PanelBody>
 					<p className="components-base-control__label">{ __( 'Layout' ) }</p>
 					<ButtonGroup aria-label={ __( 'Layout' ) }>
 						{ map( layoutOptions, ( { name, key, icon } ) => (
@@ -485,7 +485,7 @@ class KadenceTabs extends Component {
 							</Button>
 						) ) }
 					</ButtonGroup>
-				</KadencePanelBody>
+				</PanelBody>
 			</Fragment>
 		);
 		const tabControls = (
@@ -691,10 +691,9 @@ class KadenceTabs extends Component {
 		);
 		const renderAnchorSettings = ( index ) => {
 			return (
-				<KadencePanelBody
+				<PanelBody
 					title={ __( 'Tab', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Anchor', 'kadence-blocks' ) }
 					initialOpen={ false }
-					panelName={ 'kb-tab-anchor-' + index }
 				>
 					<TextControl
 						label={ __( 'HTML Anchor', 'kadence-blocks' ) }
@@ -704,15 +703,14 @@ class KadenceTabs extends Component {
 							nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
 							this.saveArrayUpdate( { anchor: nextValue }, index );
 						} } />
-				</KadencePanelBody>
+				</PanelBody>
 			);
 		};
 		const renderTitleSettings = ( index ) => {
 			return (
-				<KadencePanelBody
+				<PanelBody
 					title={ __( 'Tab', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Icon', 'kadence-blocks' ) }
 					initialOpen={ false }
-					panelName={ 'kb-tab-icon-' + index }
 				>
 					<IconControl
 						value={ titles[ index ] && titles[ index ].icon ? titles[ index ].icon : '' }
@@ -739,77 +737,77 @@ class KadenceTabs extends Component {
 							this.saveArrayUpdate( { onlyIcon: value }, index );
 						} }
 					/>
-				</KadencePanelBody>
+				</PanelBody>
 			);
 		};
 		const normalSettings = (
 			<Fragment>
-				<PopColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Title Color', 'kadence-blocks' ) }
-					value={ ( titleColor ? titleColor : '' ) }
-					default={ '#444444' }
-					onChange={ ( value ) => setAttributes( { titleColor: value } ) }
+					colorValue={ ( titleColor ? titleColor : '' ) }
+					colorDefault={ '#444444' }
+					onColorChange={ ( value ) => setAttributes( { titleColor: value } ) }
 				/>
-				<PopColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Title Background', 'kadence-blocks' ) }
-					value={ ( titleBg ? titleBg : '' ) }
-					default={ '' }
-					onChange={ ( value ) => setAttributes( { titleBg: value } ) }
+					colorValue={ ( titleBg ? titleBg : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleBg: value } ) }
 				/>
-				<PopColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Title Border Color', 'kadence-blocks' ) }
-					value={ ( titleBorder ? titleBorder : '' ) }
-					default={ '' }
-					onChange={ ( value ) => setAttributes( { titleBorder: value } ) }
+					colorValue={ ( titleBorder ? titleBorder : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleBorder: value } ) }
 				/>
 			</Fragment>
 		);
 		const hoverSettings = (
 			<Fragment>
-				<PopColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Hover Color', 'kadence-blocks' ) }
-					value={ ( titleColorHover ? titleColorHover : '' ) }
-					default={ '#222222' }
-					onChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
+					colorValue={ ( titleColorHover ? titleColorHover : '' ) }
+					colorDefault={ '#222222' }
+					onColorChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
 				/>
-				<PopColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Hover Background', 'kadence-blocks' ) }
-					value={ ( titleBgHover ? titleBgHover : '' ) }
-					default={ '#e2e2e2' }
-					onChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
+					colorValue={ ( titleBgHover ? titleBgHover : '' ) }
+					colorDefault={ '#e2e2e2' }
+					onColorChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
 				/>
-				<PopColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Hover Border Color', 'kadence-blocks' ) }
-					value={ ( titleBorderHover ? titleBorderHover : '' ) }
-					default={ '#eeeeee' }
-					onChange={ ( value ) => setAttributes( { titleBorderHover: value } ) }
+					colorValue={ ( titleBorderHover ? titleBorderHover : '' ) }
+					colorDefault={ '#eeeeee' }
+					onColorChange={ ( value ) => setAttributes( { titleBorderHover: value } ) }
 				/>
 			</Fragment>
 		);
 		const activeSettings = (
 			<Fragment>
-				<PopColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Active Color', 'kadence-blocks' ) }
-					value={ ( titleColorActive ? titleColorActive : '' ) }
-					default={ '#222222' }
-					onChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
+					colorValue={ ( titleColorActive ? titleColorActive : '' ) }
+					colorDefault={ '#222222' }
+					onColorChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
 				/>
-				<PopColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Active Background', 'kadence-blocks' ) }
-					value={ ( titleBgActive ? titleBgActive : '' ) }
-					default={ '#eeeeee' }
-					onChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
+					colorValue={ ( titleBgActive ? titleBgActive : '' ) }
+					colorDefault={ '#eeeeee' }
+					onColorChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
 				/>
-				<PopColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Active Border Color', 'kadence-blocks' ) }
-					value={ ( titleBorderActive ? titleBorderActive : '' ) }
-					default={ '#eeeeee' }
-					onChange={ ( value ) => setAttributes( { titleBorderActive: value } ) }
+					colorValue={ ( titleBorderActive ? titleBorderActive : '' ) }
+					colorDefault={ '#eeeeee' }
+					onColorChange={ ( value ) => setAttributes( { titleBorderActive: value } ) }
 				/>
 			</Fragment>
 		);
 		const sizeDeskControls = (
-			<KadencePanelBody panelName={ 'kb-tab-size-desktop-controls' }>
+			<PanelBody>
 				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 					{ map( sizeTypes, ( { name, key } ) => (
 						<Button
@@ -854,10 +852,10 @@ class KadenceTabs extends Component {
 					max={ lineMax }
 					step={ lineStep }
 				/>
-			</KadencePanelBody>
+			</PanelBody>
 		);
 		const sizeTabletControls = (
-			<KadencePanelBody panelName={ 'kb-tabs-size-tablet-controls' }>
+			<PanelBody>
 				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 					{ map( sizeTypes, ( { name, key } ) => (
 						<Button
@@ -902,10 +900,10 @@ class KadenceTabs extends Component {
 					max={ lineMax }
 					step={ lineStep }
 				/>
-			</KadencePanelBody>
+			</PanelBody>
 		);
 		const sizeMobileControls = (
-			<KadencePanelBody panelName={ 'kb-tabs-size-mobile-controls' }>
+			<PanelBody>
 				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 					{ map( sizeTypes, ( { name, key } ) => (
 						<Button
@@ -950,7 +948,7 @@ class KadenceTabs extends Component {
 					max={ lineMax }
 					step={ lineStep }
 				/>
-			</KadencePanelBody>
+			</PanelBody>
 		);
 		const sizeTabControls = (
 			<TabPanel className="kt-size-tabs"
@@ -1026,7 +1024,7 @@ class KadenceTabs extends Component {
 							tabControls
 						) }
 						{ ! this.showSettings( 'tabLayout' ) && (
-							<KadencePanelBody panelName={ 'kb-tab-layout' }>
+							<PanelBody>
 								<h2>{ __( 'Set Initial Open Tab', 'kadence-blocks' ) }</h2>
 								<ButtonGroup aria-label={ __( 'Initial Open Tab', 'kadence-blocks' ) }>
 									{ times( tabCount, n => (
@@ -1042,19 +1040,18 @@ class KadenceTabs extends Component {
 										</Button>
 									) ) }
 								</ButtonGroup>
-							</KadencePanelBody>
+							</PanelBody>
 						) }
 						{ this.showSettings( 'tabContent' ) && (
-							<KadencePanelBody
+							<PanelBody
 								title={ __( 'Content Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
-								panelName={ 'kb-tab-content-settings' }
 							>
-								<PopColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Content Background', 'kadence-blocks' ) }
-									value={ ( contentBgColor ? contentBgColor : '' ) }
-									default={ '' }
-									onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
+									colorValue={ ( contentBgColor ? contentBgColor : '' ) }
+									colorDefault={ '' }
+									onColorChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Inner Content Padding (px)', 'kadence-blocks' ) }
@@ -1066,11 +1063,11 @@ class KadenceTabs extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
-								<PopColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Border Color', 'kadence-blocks' ) }
-									value={ ( contentBorderColor ? contentBorderColor : '' ) }
-									default={ '' }
-									onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
+									colorValue={ ( contentBorderColor ? contentBorderColor : '' ) }
+									colorDefault={ '' }
+									onColorChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Content Border Width (px)', 'kadence-blocks' ) }
@@ -1082,13 +1079,12 @@ class KadenceTabs extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
-							</KadencePanelBody>
+							</PanelBody>
 						) }
 						{ this.showSettings( 'titleColor' ) && (
-							<KadencePanelBody
+							<PanelBody
 								title={ __( 'Tab Title Color Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
-								panelName={ 'kb-tab-title-color' }
 							>
 								<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
 									activeClass="active-tab"
@@ -1125,13 +1121,12 @@ class KadenceTabs extends Component {
 										}
 									}
 								</TabPanel>
-							</KadencePanelBody>
+							</PanelBody>
 						) }
 						{ this.showSettings( 'titleSpacing' ) && (
-							<KadencePanelBody
+							<PanelBody
 								title={ __( 'Tab Title Width/Spacing/Border', 'kadence-blocks' ) }
 								initialOpen={ false }
-								panelName={ 'kb-tab-title-spacing' }
 							>
 								{ 'tabs' === layout && (
 									<Fragment>
@@ -1364,13 +1359,12 @@ class KadenceTabs extends Component {
 									thirdIcon={ icons.bottomright }
 									fourthIcon={ icons.bottomleft }
 								/>
-							</KadencePanelBody>
+							</PanelBody>
 						) }
 						{ this.showSettings( 'titleFont' ) && (
-							<KadencePanelBody
+							<PanelBody
 								title={ __( 'Tab Title Font Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
-								panelName={ 'kb-tab-title-font' }
 							>
 								<TypographyControls
 									fontFamily={ typography }
@@ -1406,13 +1400,12 @@ class KadenceTabs extends Component {
 									max={ 15 }
 									step={ 0.1 }
 								/>
-							</KadencePanelBody>
+							</PanelBody>
 						) }
 						{ this.showSettings( 'titleIcon' ) && (
-							<KadencePanelBody
+							<PanelBody
 								title={ __( 'Tab Title Icon Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
-								panelName={ 'kb-tab-title-icon' }
 							>
 								<RangeControl
 									label={ __( 'Icon Size', 'kadence-blocks' ) }
@@ -1423,13 +1416,12 @@ class KadenceTabs extends Component {
 									step={ 1 }
 								/>
 								{ times( tabCount, n => renderTitleSettings( n ) ) }
-							</KadencePanelBody>
+							</PanelBody>
 						) }
 						{ this.showSettings( 'subtitle' ) && (
-							<KadencePanelBody
+							<PanelBody
 								title={ __( 'Tab Subtitle Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
-								panelName={ 'kb-tab-subtitle-settings' }
 							>
 								<ToggleControl
 									label={ __( 'Show Subtitles?', 'kadence-blocks' ) }
@@ -1483,22 +1475,20 @@ class KadenceTabs extends Component {
 										onMarginControl={ ( value ) => saveSubtitleFont( { marginControl: value } ) }
 									/>
 								) }
-							</KadencePanelBody>
+							</PanelBody>
 						) }
 						{ this.showSettings( 'titleAnchor' ) && (
-							<KadencePanelBody
+							<PanelBody
 								title={ __( 'Tab Anchor Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
-								panelName={ 'kb-tab-anchor-settings' }
 							>
 								{ times( tabCount, n => renderAnchorSettings( n ) ) }
-							</KadencePanelBody>
+							</PanelBody>
 						) }
 						{ this.showSettings( 'structure' ) && (
-							<KadencePanelBody
+							<PanelBody
 								title={ __( 'Structure Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
-								panelName={ 'kb-tab-structure-settings' }
 							>
 								<RangeControl
 									label={ __( 'Content Minimum Height', 'kadence-blocks' ) }
@@ -1522,7 +1512,7 @@ class KadenceTabs extends Component {
 									min={ 0 }
 									max={ 2000 }
 								/>
-							</KadencePanelBody>
+							</PanelBody>
 						) }
 					</InspectorControls>
 				) }

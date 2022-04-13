@@ -14,7 +14,6 @@ import PopColorControl from '../../components/color/pop-color-control';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
 
 /**
  * WordPress dependencies
@@ -24,6 +23,7 @@ const { Component, Fragment } = wp.element;
 const { InspectorControls } = wp.blockEditor;
 const {
 	TextControl,
+	PanelBody,
 	RangeControl,
 	ToggleControl,
 	TabPanel,
@@ -121,8 +121,7 @@ class Inspector extends Component {
 			numberMargin,
 			numberPaddingType,
 			numberMarginType,
-			decimalSpaces,
-			decimal,
+
 		} = attributes;
 		const { titlePaddingControl, titleMarginControl, numberPaddingControl, numberMarginControl } = this.state;
 		const saveTitleFont = ( value ) => {
@@ -153,11 +152,9 @@ class Inspector extends Component {
 		return (
 			<Fragment>
 				<InspectorControls>
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Count Up Settings' ) }
-						initialOpen={ true }
-						panelName={ 'kb-inspector-countup-settings' }
-					>
+						initialOpen={ true }>
 
 						<div className="kt-columns-control">
 
@@ -213,35 +210,13 @@ class Inspector extends Component {
 									{ value: '.', label: '.' },
 								] }
 								onChange={ value => setAttributes( { separator: value } ) }
-							/>
-							<SelectControl
-								label={ __( 'Decimal', 'kadence-blocks' ) }
-								value={ decimal }
-								options={ [
-									{ value: '', label: __( 'None', 'kadence-blocks' ) },
-									{ value: '.', label: '.' },
-									{ value: ',', label: ',' },
-								] }
-								onChange={ value => setAttributes( { decimal: value } ) }
-							/>
-							{ decimal && (
-								<RangeControl
-									label={ __( 'Decimal Spaces', 'kadence-blocks' ) }
-									value={ decimalSpaces }
-									onChange={ (value) => setAttributes({ decimalSpaces: value }) }
-									min={ 1 }
-									max={ 25 }
-									step={ 1 }
-								/>
-							) }
+							/> 
 						</div>
-					</KadencePanelBody>
+					</PanelBody>
 
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Title Settings', 'kadence-blocks' ) }
-						initialOpen={ false }
-						panelName={ 'kb-inspector-title-settings' }
-					>
+						initialOpen={ false }>
 						<ToggleControl
 							label={ __( 'Show Title', 'kadence-blocks' ) }
 							checked={ displayTitle }
@@ -404,13 +379,11 @@ class Inspector extends Component {
 								/>
 							</Fragment>
 						}
-					</KadencePanelBody>
+					</PanelBody>
 
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Number Settings', 'kadence-blocks' ) }
-						initialOpen={ false }
-						panelName={ 'kb-inspector-number-settings' }
-					>
+						initialOpen={ false }>
 						<PopColorControl
 							label={ __( 'Number Color', 'kadence-blocks' ) }
 							value={ ( numberColor ? numberColor : '' ) }
@@ -554,7 +527,7 @@ class Inspector extends Component {
 							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 							onUnit={ ( value ) => setAttributes( { numberMarginType: value } ) }
 						/>
-					</KadencePanelBody>
+					</PanelBody>
 				</InspectorControls>
 			</Fragment>
 		);

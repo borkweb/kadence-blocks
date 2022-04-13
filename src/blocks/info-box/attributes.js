@@ -229,7 +229,6 @@ const attributes = {
 			variant: '',
 			subset: '',
 			loadGoogle: true,
-			textTransform: '',
 		} ],
 	},
 	textSpacing: {
@@ -283,7 +282,6 @@ const attributes = {
 			paddingTablet: [ '', '', '', '' ],
 			paddingMobile: [ '', '', '', '' ],
 			paddingType: 'px',
-			textTransform: '',
 		} ],
 	},
 	displayShadow: {

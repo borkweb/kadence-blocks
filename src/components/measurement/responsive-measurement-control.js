@@ -53,19 +53,24 @@ export default function ResponsiveMeasurementControls( {
 	const realOnChangeMobileControl = onChangeMobileControl ? onChangeMobileControl : onChangeControl;
 	const zero = ( allowEmpty ? true : false );
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
+	let customSetPreviewDeviceType = ( device ) => {
+		setDeviceType( capitalizeFirstLetter( device ) );
+	};
 	const theDevice = useSelect( ( select ) => {
 		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
 	}, [] );
 	if ( theDevice !== deviceType ) {
 		setDeviceType( theDevice );
 	}
-	const {
-		setPreviewDeviceType,
-	} = useDispatch( 'kadenceblocks/data' );
-	const customSetPreviewDeviceType = ( device ) => {
-		setPreviewDeviceType( capitalizeFirstLetter( device ) );
-		setDeviceType( capitalizeFirstLetter( device ) );
-	};
+	if ( wp.data.select( 'core/edit-post' ) ) {
+		const {
+			__experimentalSetPreviewDeviceType = null,
+		} = useDispatch( 'core/edit-post' );
+		customSetPreviewDeviceType = ( device ) => {
+			__experimentalSetPreviewDeviceType( capitalizeFirstLetter( device ) );
+			setDeviceType( capitalizeFirstLetter( device ) );
+		};
+	}
 	const devices = [
 		{
 			name: 'Desktop',

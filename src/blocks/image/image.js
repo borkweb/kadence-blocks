@@ -9,6 +9,7 @@ import { get, filter, map, pick, includes } from 'lodash';
 import { isBlobURL } from '@wordpress/blob';
 import {
 	ExternalLink,
+	PanelBody,
 	ResizableBox,
 	SelectControl,
 	Spinner,
@@ -59,8 +60,6 @@ import TypographyControls from '../../components/typography/typography-control';
 import URLInputControl from '../../components/links/link-control';
 import KadenceRange from '../../components/range/range-control';
 import KadenceImageURLInputUI from '../../components/links/image-url-input-link-control';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadencePanelBody from '../../components/KadencePanelBody'
 
 export default function Image( {
 	temporaryURL,
@@ -90,8 +89,6 @@ export default function Image( {
 		useRatio,
 		ratio,
 		imgMaxWidth,
-		imgMaxWidthTablet,
-		imgMaxWidthMobile,
 		uniqueID,
 		marginDesktop,
 		marginTablet,
@@ -126,7 +123,6 @@ export default function Image( {
 		linkNoFollow,
 		linkSponsored,
 		linkDestination,
-		linkTitle,
 	} = attributes;
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -156,8 +152,6 @@ export default function Image( {
 	const previewBorderRight = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[1] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 1 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 1 ] : '' ) );
 	const previewBorderBottom = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[2] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 2 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 2 ] : '' ) );
 	const previewBorderLeft = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[3] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 3 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 3 ] : '' ) );
-
-	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== imgMaxWidth ? imgMaxWidth : '' ), ( undefined !== imgMaxWidthTablet ? imgMaxWidthTablet : '' ), ( undefined !== imgMaxWidthMobile ? imgMaxWidthMobile : '' ) );
 
 	const previewCaptionFontSizeUnit = captionStyles[ 0 ].sizeType !== undefined ? captionStyles[ 0 ].sizeType : 'px';
 	const previewCaptionFontSize = getPreviewSize( previewDevice, ( undefined !== captionStyles[ 0 ].size[0] ? captionStyles[ 0 ].size[0] + previewCaptionFontSizeUnit : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[1] ? captionStyles[ 0 ].size[ 1 ] + previewCaptionFontSizeUnit : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[2] ? captionStyles[ 0 ].size[ 2 ] + previewCaptionFontSizeUnit : 'inherit' ) );
@@ -362,8 +356,6 @@ export default function Image( {
 			height: undefined,
 			sizeSlug: imgData.slug,
 			imgMaxWidth: undefined,
-			imgMaxWidthTablet: undefined,
-			imgMaxWidthMobile: undefined,
 		} );
 	}
 	function uploadExternal() {
@@ -469,11 +461,7 @@ export default function Image( {
 				</BlockControls>
 			) }
 			<InspectorControls>
-				<KadencePanelBody
-					title={ __('Image settings', 'kadence-blocks') }
-					initialOpen={ true }
-					panelName={ 'kb-image-settings' }
-				>
+				<PanelBody title={ __( 'Image settings', 'kadence-blocks' ) } initialOpen={ true } >
 					<KadenceImageControl
 						label={ __( 'Image', 'kadence-blocks' ) }
 						hasImage={ ( url ? true : false ) }
@@ -550,20 +538,13 @@ export default function Image( {
 						/>
 					) }
 					{ isResizable && (
-						<ResponsiveRangeControls
+						<KadenceRange
 							label={ __( 'Max Image Width', 'kadence-blocks' ) }
-							value={ ( imgMaxWidth ? imgMaxWidth : '' ) }
+							value={ imgMaxWidth }
 							onChange={ value => setAttributes( { imgMaxWidth: value } ) }
-							tabletValue={ ( imgMaxWidthTablet ? imgMaxWidthTablet : '' ) }
-							onChangeTablet={ ( value ) => setAttributes( { imgMaxWidthTablet: value } ) }
-							mobileValue={ ( imgMaxWidthMobile ? imgMaxWidthMobile : '' ) }
-							onChangeMobile={ ( value ) => setAttributes( { imgMaxWidthMobile: value } ) }
 							min={ 5 }
 							max={ 3000 }
 							step={ 1 }
-							unit={ 'px' }
-							showUnit={ true }
-							units={ [ 'px' ] }
 						/>
 					) }
 					<TextareaControl
@@ -592,11 +573,10 @@ export default function Image( {
 							</>
 						}
 					/>
-				</KadencePanelBody>
-				<KadencePanelBody
+				</PanelBody>
+				<PanelBody
 					title={ __( 'Spacing Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
-					panelName={ 'kb-image-spacing' }
 				>
 					<ResponsiveMeasurementControls
 						label={ __( 'Padding', 'kadence-blocks' ) }
@@ -634,12 +614,11 @@ export default function Image( {
 						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
 					/>
-				</KadencePanelBody>
+				</PanelBody>
 
-				<KadencePanelBody
+				<PanelBody
 					title={ __('Border Settings', 'kadence-blocks') }
 					initialOpen={ false }
-					panelName={ 'kb-image-border-settings' }
 				>
 					<PopColorControl
 						label={ __( 'Background Color', 'kadence-blocks' ) }
@@ -695,11 +674,10 @@ export default function Image( {
 						thirdIcon={ icons.bottomright }
 						fourthIcon={ icons.bottomleft }
 					/>
-				</KadencePanelBody>
-				<KadencePanelBody
+				</PanelBody>
+				<PanelBody
 					title={ __( 'Link Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
-					panelName={ 'kb-image-link-settings' }
 				>
 					<URLInputControl
 						label={ __( 'Image Link', 'kadence-blocks' ) }
@@ -713,10 +691,6 @@ export default function Image( {
 						linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
 						onChangeSponsored={ value => setAttributes( { linkSponsored: value } ) }
 						allowClear={ true }
-						linkTitle={ linkTitle }
-						onChangeTitle={ value => {
-							setAttributes( { linkTitle: value } )
-						} }
 						dynamicAttribute={ 'link' }
 						isSelected={ isSelected }
 						attributes={ attributes }
@@ -724,11 +698,10 @@ export default function Image( {
 						name={ 'kadence/image' }
 						clientId={ clientId }
 					/>
-				</KadencePanelBody>
-				<KadencePanelBody
+				</PanelBody>
+				<PanelBody
 					title={ __('Shadow Settings', 'kadence-blocks') }
 					initialOpen={ false }
-					panelTitle={ 'kb-image-shadow-settings' }
 				>
 					<BoxShadowControl
 						label={ __( 'Box Shadow', 'kadence-blocks' ) }
@@ -807,11 +780,10 @@ export default function Image( {
 							{ __( 'Box Shadow vs. Drop Shadow', 'kadence-blocks' ) }
 						</ExternalLink>
 					</p>
-				</KadencePanelBody>
-				<KadencePanelBody
+				</PanelBody>
+				<PanelBody
 					title={ __( 'Mask Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
-					panelName={ 'kb-image-mask-settings' }
 				>
 					<SelectControl
 						label={ __( 'Mask Shape', 'kadence-blocks' ) }
@@ -923,11 +895,10 @@ export default function Image( {
 							/>
 						</>
 					) }
-				</KadencePanelBody>
-				<KadencePanelBody
+				</PanelBody>
+				<PanelBody
 					title={ __( 'Caption Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
-					panelName={ 'kb-image-caption-settings' }
 				>
 					<ToggleControl
 						label={ __( 'Show Caption', 'kadence-blocks' ) }
@@ -985,11 +956,10 @@ export default function Image( {
 							/>
 						</Fragment>
 					) }
-				</KadencePanelBody>
-				<KadencePanelBody
+				</PanelBody>
+				<PanelBody
 					title={ __( 'Image Filter', 'kadence-blocks' ) }
 					initialOpen={ false }
-					panelName={ 'kb-image-filter' }
 				>
 					<SelectControl
 						label={ __( 'Image Filter', 'kadence-blocks' ) }
@@ -1031,7 +1001,7 @@ export default function Image( {
 						value={ imageFilter }
 						onChange={ ( value ) => setAttributes( { imageFilter: value } ) }
 					/>
-				</KadencePanelBody>
+				</PanelBody>
 			</InspectorControls>
 		</>
 	);
@@ -1160,12 +1130,12 @@ export default function Image( {
 				naturalWidth={ naturalWidth }
 			/>
 		);
-	} else if ( ! isResizable || ! imageWidthWithinContainer || 'Desktop' !== previewDevice ) {
-		img = <div style={ { maxWidth: previewMaxWidth || width } }>{ img }</div>;
+	} else if ( ! isResizable || ! imageWidthWithinContainer ) {
+		img = <div style={ { maxwidth: imgMaxWidth || width } }>{ img }</div>;
 	} else {
-		const backupWidth = useRatio ? '100%' : 'auto';
-		const currentWidth = previewMaxWidth || width || imageWidthWithinContainer;
+		const currentWidth = imgMaxWidth || width || imageWidthWithinContainer;
 		const currentHeight = height || imageHeightWithinContainer;
+
 		let imgRatio = naturalWidth / naturalHeight;
 		if ( useRatio ){
 			switch ( ratio ) {
@@ -1248,7 +1218,7 @@ export default function Image( {
 		img = (
 			<ResizableBox
 				size={ {
-					width: previewMaxWidth ?? backupWidth,
+					width: imgMaxWidth ?? width ?? '100%',
 					height: 'auto',
 				} }
 				showHandle={ isSelected }

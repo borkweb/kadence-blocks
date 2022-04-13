@@ -14,11 +14,10 @@ import times from 'lodash/times';
 import map from 'lodash/map';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
-import PopColorControl from '../../components/color/pop-color-control';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import StepControl from '../../step-control';
 import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
-import KadencePanelBody from '../../components/KadencePanelBody';
 import URLInputControl from '../../components/links/link-control';
 
 /**
@@ -42,6 +41,7 @@ const {
 	Fragment,
 } = wp.element;
 const {
+	PanelBody,
 	RangeControl,
 	TextControl,
 	SelectControl,
@@ -203,11 +203,11 @@ class KadenceIcons extends Component {
 		const hoverSettings = ( index ) => {
 			return (
 				<Fragment>
-					<PopColorControl
+					<AdvancedPopColorControl
 						label={ __( 'Icon Hover Color', 'kadence-blocks' ) }
-						value={ ( icons[ index ].hColor ? icons[ index ].hColor : '' ) }
-						default={ '' }
-						onChange={ value => {
+						colorValue={ ( icons[ index ].hColor ? icons[ index ].hColor : '' ) }
+						colorDefault={ '' }
+						onColorChange={ value => {
 							this.saveArrayUpdate( { hColor: value }, index );
 						} }
 					/>
@@ -224,11 +224,11 @@ class KadenceIcons extends Component {
 					/>
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<PopColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Hover Background Color', 'kadence-blocks' ) }
-								value={ ( icons[ index ].hBackground ? icons[ index ].hBackground : '' ) }
-								default={ '' }
-								onChange={ value => {
+								colorValue={ ( icons[ index ].hBackground ? icons[ index ].hBackground : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
 									this.saveArrayUpdate( { hBackground: value }, index );
 								} }
 							/>
@@ -236,11 +236,11 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<PopColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Hover Border Color', 'kadence-blocks' ) }
-								value={ ( icons[ index ].hBorder ? icons[ index ].hBorder : '' ) }
-								default={ '' }
-								onChange={ value => {
+								colorValue={ ( icons[ index ].hBorder ? icons[ index ].hBorder : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
 									this.saveArrayUpdate( { hBorder: value }, index );
 								} }
 							/>
@@ -252,11 +252,11 @@ class KadenceIcons extends Component {
 		const normalSettings = ( index ) => {
 			return (
 				<Fragment>
-					<PopColorControl
+					<AdvancedPopColorControl
 						label={ __( 'Icon Color', 'kadence-blocks' ) }
-						value={ ( icons[ index ].color ? icons[ index ].color : '' ) }
-						default={ '' }
-						onChange={ value => {
+						colorValue={ ( icons[ index ].color ? icons[ index ].color : '' ) }
+						colorDefault={ '' }
+						onColorChange={ value => {
 							this.saveArrayUpdate( { color: value }, index );
 						} }
 					/>
@@ -273,11 +273,11 @@ class KadenceIcons extends Component {
 					/>
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<PopColorControl
+							<AdvancedPopColorControl
 								label={ __( 'background Color', 'kadence-blocks' ) }
-								value={ ( icons[ index ].background ? icons[ index ].background : '' ) }
-								default={ '' }
-								onChange={ value => {
+								colorValue={ ( icons[ index ].background ? icons[ index ].background : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
 									this.saveArrayUpdate( { background: value }, index );
 								} }
 							/>
@@ -285,11 +285,11 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<PopColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Border Color', 'kadence-blocks' ) }
-								value={ ( icons[ index ].border ? icons[ index ].border : '' ) }
-								default={ '' }
-								onChange={ value => {
+								colorValue={ ( icons[ index ].border ? icons[ index ].border : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
 									this.saveArrayUpdate( { border: value }, index );
 								} }
 							/>
@@ -300,10 +300,9 @@ class KadenceIcons extends Component {
 		};
 		const renderIconSettings = ( index ) => {
 			return (
-				<KadencePanelBody
+				<PanelBody
 					title={ __( 'Icon', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === iconCount ? true : false ) }
-					panelName={ 'kb-icon-settings-' + index }
 				>
 					<IconControl
 						value={ icons[ index ].icon }
@@ -505,7 +504,7 @@ class KadenceIcons extends Component {
 							this.saveArrayUpdate( { title: value }, index );
 						} }
 					/>
-				</KadencePanelBody>
+				</PanelBody>
 			);
 		};
 		const renderSettings = (
@@ -568,10 +567,9 @@ class KadenceIcons extends Component {
 					/>
 				</BlockControls>
 				<InspectorControls>
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Icon Count', 'kadence-blocks' ) }
 						initialOpen={ true }
-						panelName={ 'kb-icon-count' }
 					>
 						<StepControl
 							label={ __( 'Number of Icons', 'kadence-blocks' ) }
@@ -616,7 +614,7 @@ class KadenceIcons extends Component {
 							<p className="kb-component-label kb-responsive-label">{ __( 'Text Alignment', 'kadence-blocks' ) }</p>
 							{ tabAlignControls }
 						</div>
-					</KadencePanelBody>
+					</PanelBody>
 					{ renderSettings }
 				</InspectorControls>
 				<div className={ `kt-svg-icons ${ clientId } kt-svg-icons-${ uniqueID }${ verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : '' }` } style={ {

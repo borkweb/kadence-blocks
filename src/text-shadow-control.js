@@ -6,7 +6,7 @@
 /**
  * Import Externals
  */
-import PopColorControl from './components/color/pop-color-control';
+import AdvancedPopColorControl from './advanced-pop-color-control';
 /**
  * Internal block libraries
  */
@@ -39,10 +39,10 @@ const TextShadowControl = ( { label, enable = true, color, colorDefault, blur, h
 				<div className="kt-inner-sub-section-row">
 					<div className="kt-box-color-settings kt-box-shadow-subset">
 						<p className="kt-box-shadow-title">{ __( 'Color', 'kadence-blocks' ) }</p>
-						<PopColorControl
-							value={ ( color ? color : colorDefault ) }
-							default={ colorDefault }
-							onChange={ value => onColorChange( value ) }
+						<AdvancedPopColorControl
+							colorValue={ ( color ? color : colorDefault ) }
+							colorDefault={ colorDefault }
+							onColorChange={ value => onColorChange( value ) }
 						/>
 					</div>
 					<div className="kt-box-x-settings kt-box-shadow-subset">

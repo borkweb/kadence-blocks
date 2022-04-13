@@ -10,11 +10,10 @@ import map from 'lodash/map';
 /**
  * Internal dependencies
  */
-import PopColorControl from '../../components/color/pop-color-control';
+import AdvancedPopColorControl from '../../../../advanced-pop-color-control';
 import TypographyControls from '../../../../components/typography/typography-control';
 import KadenceRange from '../../../../kadence-range-control';
 import MeasurementControls from '../../../../measurement-control';
-import KadencePanelBody from '../../../../components/KadencePanelBody';
 
 /**
  * WordPress dependencies
@@ -23,7 +22,18 @@ import { __ } from '@wordpress/i18n';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
 const {
+	TextControl,
+	SelectControl,
+	PanelBody,
+	RangeControl,
 	ToggleControl,
+	BaseControl,
+	ButtonGroup,
+	Button,
+	ColorPicker,
+	TextareaControl,
+	CheckboxControl,
+	Tooltip,
 	TabPanel,
 	Dashicon
 } = wp.components;
@@ -130,11 +140,9 @@ class Inspector extends Component {
 			<Fragment>
 				<InspectorControls>
 
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Container Settings' ) }
-						initialOpen={ false }
-						panelName={ 'kb-cat-item-settings' }
-					>
+						initialOpen={ false }>
 						<MeasurementControls
 								label={ __( 'Container Border Width (px)' ) }
 								measurement={ containerBorderWidth }
@@ -174,20 +182,20 @@ class Inspector extends Component {
 										if ( 'hover' === tab.name ) {
 											tabout = (
 												<Fragment>
-													<PopColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Hover Background' ) }
-														value={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
-														default={ '#f2f2f2' }
+														colorValue={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
+														colorDefault={ '#f2f2f2' }
 														opacityValue={ containerHoverBackgroundOpacity }
-														onChange={ value => setAttributes( { containerHoverBackground: value } ) }
+														onColorChange={ value => setAttributes( { containerHoverBackground: value } ) }
 														onOpacityChange={ value => setAttributes( { containerHoverBackgroundOpacity: value } ) }
 													/>
-													<PopColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Hover Border' ) }
-														value={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
-														default={ '#eeeeee' }
+														colorValue={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
+														colorDefault={ '#eeeeee' }
 														opacityValue={ containerHoverBorderOpacity }
-														onChange={ value => setAttributes( { containerHoverBorder: value } ) }
+														onColorChange={ value => setAttributes( { containerHoverBorder: value } ) }
 														onOpacityChange={ value => setAttributes( { containerHoverBorderOpacity: value } ) }
 													/>
 												</Fragment>
@@ -195,20 +203,20 @@ class Inspector extends Component {
 										} else {
 											tabout = (
 												<Fragment>
-													<PopColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Container Background' ) }
-														value={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
-														default={ '#f2f2f2' }
+														colorValue={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
+														colorDefault={ '#f2f2f2' }
 														opacityValue={ containerBackgroundOpacity }
-														onChange={ value => setAttributes( { containerBackground: value } ) }
+														onColorChange={ value => setAttributes( { containerBackground: value } ) }
 														onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 													/>
-													<PopColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Container Border' ) }
-														value={ ( containerBorder ? containerBorder : '#eeeeee' ) }
-														default={ '#eeeeee' }
+														colorValue={ ( containerBorder ? containerBorder : '#eeeeee' ) }
+														colorDefault={ '#eeeeee' }
 														opacityValue={ containerBorderOpacity }
-														onChange={ value => setAttributes( { containerBorder: value } ) }
+														onColorChange={ value => setAttributes( { containerBorder: value } ) }
 														onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 													/>
 												</Fragment>
@@ -229,13 +237,11 @@ class Inspector extends Component {
 							max={ 100 }
 							step={ 1 }
 						/>
-					</KadencePanelBody>
+					</PanelBody>
 
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Title Settings' ) }
-						initialOpen={ false }
-						panelName={ 'kb-cat-item-title-settings' }
-					>
+						initialOpen={ false }>
 						<ToggleControl
 							label={ __( 'Show Title' ) }
 							checked={ displayTitle }
@@ -265,20 +271,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<PopColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Hover Color' ) }
-															value={ ( titleHoverColor ? titleHoverColor : '' ) }
-															default={ '' }
-															onChange={ value => setAttributes( { titleHoverColor: value } ) }
+															colorValue={ ( titleHoverColor ? titleHoverColor : '' ) }
+															colorDefault={ '' }
+															onColorChange={ value => setAttributes( { titleHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<PopColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Title Color' ) }
-															value={ ( titleColor ? titleColor : '' ) }
-															default={ '' }
-															onChange={ value => setAttributes( { titleColor: value } ) }
+															colorValue={ ( titleColor ? titleColor : '' ) }
+															colorDefault={ '' }
+															onColorChange={ value => setAttributes( { titleColor: value } ) }
 														/>
 													);
 												}
@@ -393,14 +399,12 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</KadencePanelBody>
+					</PanelBody>
 
 
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Text Settings' ) }
-						initialOpen={ false }
-						panelName={ 'kb-cat-item-text' }
-					>
+						initialOpen={ false }>
 						<ToggleControl
 							label={ __( 'Show Text' ) }
 							checked={ displayText }
@@ -430,20 +434,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<PopColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Hover Color' ) }
-															value={ ( textHoverColor ? textHoverColor : '' ) }
-															default={ '' }
-															onChange={ value => setAttributes( { textHoverColor: value } ) }
+															colorValue={ ( textHoverColor ? textHoverColor : '' ) }
+															colorDefault={ '' }
+															onColorChange={ value => setAttributes( { textHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<PopColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Title Color' ) }
-															value={ ( textColor ? textColor : '' ) }
-															default={ '' }
-															onChange={ value => setAttributes( { textColor: value } ) }
+															colorValue={ ( textColor ? textColor : '' ) }
+															colorDefault={ '' }
+															onColorChange={ value => setAttributes( { textColor: value } ) }
 														/>
 													);
 												}
@@ -558,14 +562,12 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</KadencePanelBody>
+					</PanelBody>
 
 
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Price Settings' ) }
-						initialOpen={ false }
-						panelName={ 'kb-cat-item-price' }
-					>
+						initialOpen={ false }>
 						<ToggleControl
 							label={ __( 'Show Price' ) }
 							checked={ displayAmount }
@@ -595,20 +597,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<PopColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Hover Color' ) }
-															value={ ( priceHoverColor ? priceHoverColor : '' ) }
-															default={ '' }
-															onChange={ value => setAttributes( { priceHoverColor: value } ) }
+															colorValue={ ( priceHoverColor ? priceHoverColor : '' ) }
+															colorDefault={ '' }
+															onColorChange={ value => setAttributes( { priceHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<PopColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Title Color' ) }
-															value={ ( priceColor ? priceColor : '' ) }
-															default={ '' }
-															onChange={ value => setAttributes( { priceColor: value } ) }
+															colorValue={ ( priceColor ? priceColor : '' ) }
+															colorDefault={ '' }
+															onColorChange={ value => setAttributes( { priceColor: value } ) }
 														/>
 													);
 												}
@@ -723,7 +725,7 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</KadencePanelBody>
+					</PanelBody>
 
 	            </InspectorControls>
 	        </Fragment>

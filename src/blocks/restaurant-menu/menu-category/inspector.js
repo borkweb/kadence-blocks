@@ -10,10 +10,9 @@ import map from 'lodash/map';
 /**
  * Internal dependencies
  */
-import PopColorControl from '../../components/color/pop-color-control';
+import AdvancedPopColorControl from '../../../advanced-pop-color-control';
 import TypographyControls from '../../components/typography/typography-control';
 import KadenceRange from '../../../kadence-range-control';
-import KadencePanelBody from '../../../components/KadencePanelBody';
 
 /**
  * WordPress dependencies
@@ -22,10 +21,17 @@ import { __ } from '@wordpress/i18n';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
 const {
+	TextControl,
+	SelectControl,
+	PanelBody,
 	RangeControl,
 	ToggleControl,
+	BaseControl,
 	ButtonGroup,
 	Button,
+	ColorPicker,
+	TextareaControl,
+	CheckboxControl,
 	Tooltip,
 	TabPanel,
 	Dashicon
@@ -107,11 +113,9 @@ class Inspector extends Component {
 		return (
 			<Fragment>
 				<InspectorControls>
-					<KadencePanelBody
+					<PanelBody
 						title={ __( "Settings" ) }
-						initialOpen={ false }
-						panelName={ 'kb-menu-settings' }
-					>
+						initialOpen={ false }>
 
 						<div className="kt-columns-control">
 							<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type', 'kadence-blocks' ) }>
@@ -250,12 +254,11 @@ class Inspector extends Component {
 								}
 							</TabPanel>
 						</div>
-					</KadencePanelBody>
+					</PanelBody>
 
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Title Settings' ) }
 						initialOpen={ false }
-						panelName={ 'kb-menu-title' }
 					>
 						<ToggleControl
 							label={ __( 'Show Title' ) }
@@ -286,20 +289,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<PopColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Hover Color' ) }
-															value={ ( titleHoverColor ? titleHoverColor : '' ) }
-															default={ '' }
-															onChange={ value => setAttributes( { titleHoverColor: value } ) }
+															colorValue={ ( titleHoverColor ? titleHoverColor : '' ) }
+															colorDefault={ '' }
+															onColorChange={ value => setAttributes( { titleHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<PopColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Title Color' ) }
-															value={ ( titleColor ? titleColor : '' ) }
-															default={ '' }
-															onChange={ value => setAttributes( { titleColor: value } ) }
+															colorValue={ ( titleColor ? titleColor : '' ) }
+															colorDefault={ '' }
+															onColorChange={ value => setAttributes( { titleColor: value } ) }
 														/>
 													);
 												}
@@ -414,7 +417,7 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</KadencePanelBody>
+					</PanelBody>
 	            </InspectorControls>
 	        </Fragment>
 		);

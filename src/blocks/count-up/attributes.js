@@ -180,14 +180,6 @@ const attributes = {
 	separator: {
 		type: 'string',
 		default: '',
-	},
-	decimal: {
-		type: 'string',
-		default: '',
-	},
-	decimalSpaces: {
-		type: 'number',
-		default: 2
 	}
 };
 export default attributes;

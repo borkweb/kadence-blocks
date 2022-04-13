@@ -16,7 +16,10 @@ import KadenceSelectTerms from '../../components/terms/select-terms-control';
 import TypographyControls from '../../components/typography/typography-control';
 import debounce from 'lodash/debounce';
 import classnames from 'classnames';
+import map from 'lodash/map';
 import Select from 'react-select';
+import pickBy from 'lodash/pickBy';
+import isUndefined from 'lodash/isUndefined';
 import KadenceRange from '../../components/range/range-control';
 import getQuery from './get-query';
 
@@ -30,7 +33,6 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
-import KadencePanelBody from '../../components/KadencePanelBody'
 const { dateI18n, format, __experimentalGetSettings } = wp.date;
 const {
 	Component,
@@ -44,11 +46,18 @@ const {
 	InspectorAdvancedControls,
 } = wp.blockEditor;
 const {
+	Button,
+	ButtonGroup,
+	PanelBody,
+	Tooltip,
+	RangeControl,
 	TextControl,
 	Placeholder,
 	ToggleControl,
 	SelectControl,
 	RadioControl,
+	TabPanel,
+	Dashicon,
 	Spinner,
 } = wp.components;
 const { apiFetch } = wp;
@@ -130,7 +139,7 @@ class KadencePosts extends Component {
 			} );
 	}
 	render() {
-		const { attributes: { uniqueID, order, columns, tabletColumns, mobileColumns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorLink, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle, titleFont, excerptCustomLength, excerptLength }, className, setAttributes, taxList, taxOptions, taxFilterOptions } = this.props;
+		const { attributes: { uniqueID, order, columns, tabletColumns, mobileColumns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle, titleFont, excerptCustomLength, excerptLength }, className, setAttributes, taxList, taxOptions, taxFilterOptions } = this.props;
 		const { latestPosts, loaded } = this.state;
 		const taxonomyList = [];
 		const taxonomyOptions = [];
@@ -198,7 +207,7 @@ class KadencePosts extends Component {
 		const settingspanel = (
 			<Fragment>
 				<InspectorControls>
-					<KadencePanelBody panelName={'kb-posts-settings'}>
+					<PanelBody>
 						<SelectControl
 							label={ __( 'Select Posts Type:', 'kadence-blocks' ) }
 							options={ postTypes }
@@ -383,11 +392,10 @@ class KadencePosts extends Component {
 							checked={ allowSticky }
 							onChange={ ( value ) => setAttributes( { allowSticky: value } ) }
 						/>
-					</KadencePanelBody>
-					<KadencePanelBody
+					</PanelBody>
+					<PanelBody
 						title={ __( 'Layout Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
-						panelName={ 'kb-posts-layout-settings' }
 					>
 						<KadenceRange
 							label={ __( 'Columns', 'kadence-blocks' ) }
@@ -437,11 +445,10 @@ class KadencePosts extends Component {
 							value={ loopStyle }
 							onChange={ ( value ) => setAttributes( { loopStyle: value } ) }
 						/>
-					</KadencePanelBody>
-					<KadencePanelBody
+					</PanelBody>
+					<PanelBody
 						title={ __( 'Image Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
-						panelName={ 'kb-posts-image-settings' }
 					>
 						<ToggleControl
 							label={ __( 'Enable Image', 'kadence-blocks' ) }
@@ -522,12 +529,11 @@ class KadencePosts extends Component {
 								/>
 							</Fragment>
 						) }
-					</KadencePanelBody>
+					</PanelBody>
 					{ ( ! postType || postType === 'post' ) && (
-						<KadencePanelBody
+						<PanelBody
 							title={ __( 'Category Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
-							panelName={ 'kb-posts-category-settings' }
 						>
 							<ToggleControl
 								label={ __( 'Enable Above Title Category', 'kadence-blocks' ) }
@@ -578,12 +584,11 @@ class KadencePosts extends Component {
 									) }
 								</Fragment>
 							) }
-						</KadencePanelBody>
+						</PanelBody>
 					) }
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Title Size', 'kadence-blocks' ) }
 						initialOpen={ false }
-						panelName={ 'kb-posts-title-settings' }
 					>
 						<TypographyControls
 							fontGroup={ 'post-title' }
@@ -604,11 +609,10 @@ class KadencePosts extends Component {
 							letterSpacingType={ titleFont[ 0 ].letterType }
 							onLetterSpacingType={ ( value ) => saveTitleFont( { letterType: value } ) }
 						/>
-					</KadencePanelBody>
-					<KadencePanelBody
+					</PanelBody>
+					<PanelBody
 						title={ __( 'Meta Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
-						panelName={ 'kb-posts-meta-settings' }
 					>
 						<ToggleControl
 							label={ __( 'Enable Meta Info', 'kadence-blocks' ) }
@@ -638,11 +642,6 @@ class KadencePosts extends Component {
 												max={ 100 }
 											/>
 										) }
-										<ToggleControl
-											label={ __( 'Enable Author Link', 'kadence-blocks' ) }
-											checked={ authorLink }
-											onChange={ ( value ) => setAttributes( { authorLink: value } ) }
-										/>
 										<ToggleControl
 											label={ __( 'Enable Author Label', 'kadence-blocks' ) }
 											checked={ authorEnabledLabel }
@@ -731,11 +730,10 @@ class KadencePosts extends Component {
 								) }
 							</Fragment>
 						) }
-					</KadencePanelBody>
-					<KadencePanelBody
+					</PanelBody>
+					<PanelBody
 						title={ __( 'Content Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
-						panelName={ 'kb-posts-content' }
 					>
 						<ToggleControl
 							label={ __( 'Enable Excerpt', 'kadence-blocks' ) }
@@ -768,7 +766,7 @@ class KadencePosts extends Component {
 								onChange={ ( value ) => setAttributes( { readmoreLabel: value } ) }
 							/>
 						) }
-					</KadencePanelBody>
+					</PanelBody>
 				</InspectorControls>
 			</Fragment>
 		);
@@ -780,7 +778,7 @@ class KadencePosts extends Component {
 						icon="admin-post"
 						label={ __( 'Posts', 'kadence-blocks' ) }
 					>
-
+						
 						<Spinner />
 					</Placeholder>
 				</Fragment>
@@ -794,7 +792,7 @@ class KadencePosts extends Component {
 						icon="admin-post"
 						label={ __( 'Posts', 'kadence-blocks' ) }
 					>
-
+						
 						{ ! Array.isArray( latestPosts ) ?
 							<Spinner /> :
 							__( 'No posts found.', 'kadence-blocks' ) }
@@ -901,15 +899,9 @@ class KadencePosts extends Component {
 												</span>
 											) }
 											<span className="author vcard">
-												{ authorLink ? (
-													<a className="url fn n" href={ post.author_info.author_link }>
-														{ post.author_info.display_name }
-													</a>
-												) : (
-													<span className="fn n">
-														{ post.author_info.display_name }
-													</span>
-												) }
+												<a className="url fn n" href={ post.author_info.author_link }>
+													{ post.author_info.display_name }
+												</a>
 											</span>
 										</span>
 									) }

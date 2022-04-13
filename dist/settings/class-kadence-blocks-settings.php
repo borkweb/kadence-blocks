@@ -67,7 +67,7 @@ class Kadence_Blocks_Settings {
 		add_action( 'init',  array( $this, 'init_post_meta' ) );
 		add_action( 'admin_head-post.php', array( $this, 'admin_editor_width' ), 100 );
 		add_action( 'admin_head-post-new.php', array( $this, 'admin_editor_width' ), 100 );
-		add_action( 'kadence_blocks_dash_side_panel_pro', array( $this, 'admin_pro_kadence_notice' ), 10 );
+
 	}
 	/**
 	 * Add inline css editor width
@@ -547,17 +547,6 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
-			'kadence_blocks_google_maps_api',
-			'kadence_blocks_google_maps_api',
-			array(
-				'type'              => 'string',
-				'description'       => __( 'Google Maps API Key', 'kadence-blocks-pro' ),
-				'sanitize_callback' => 'sanitize_text_field',
-				'show_in_rest'      => true,
-				'default'           => '',
-			)
-		);
-		register_setting(
 			'kadence_blocks_cloud',
 			'kadence_blocks_cloud',
 			array(
@@ -776,59 +765,33 @@ class Kadence_Blocks_Settings {
 					</div>
 					<div class="side-panel">
 						<?php do_action( 'kadence_blocks_dash_side_panel' ); ?>
-						<?php if ( apply_filters( 'kadence_blocks_dash_brand_sidebar', true ) ) { ?>
-							<?php do_action( 'kadence_blocks_dash_side_panel_pro' ); ?>
-							<div class="community-section sidebar-section components-panel">
-								<div class="components-panel__body is-opened">
-									<h2><?php esc_html_e( 'Web Creators Community', 'kadence-blocks' ); ?></h2>
-									<p><?php esc_html_e( 'Join our community of fellow kadence users creating effective websites! Share your site, ask a question and help others.', 'kadence-blocks' ); ?></p>
-									<a href="https://www.facebook.com/groups/webcreatorcommunity" target="_blank" class="sidebar-link"><?php esc_html_e( 'Join our Facebook Group', 'kadence-blocks' ); ?></a>
-								</div>
+						<div class="community-section sidebar-section components-panel">
+							<div class="components-panel__body is-opened">
+								<h2><?php esc_html_e( 'Web Creators Community', 'kadence' ); ?></h2>
+								<p><?php esc_html_e( 'Join our community of fellow kadence users creating effective websites! Share your site, ask a question and help others.', 'kadence' ); ?></p>
+								<a href="https://www.facebook.com/groups/webcreatorcommunity" target="_blank" class="sidebar-link"><?php esc_html_e( 'Join our Facebook Group', 'kadence' ); ?></a>
 							</div>
-							<div class="support-section sidebar-section components-panel">
-								<div class="components-panel__body is-opened">
-									<h2><?php esc_html_e( 'Documentation', 'kadence-blocks' ); ?></h2>
-									<p><?php esc_html_e( 'Need help? We have a knowledge base full of articles to get you started.', 'kadence-blocks' ); ?></p>
-									<a href="https://www.kadencewp.com/kadence-blocks/documentation/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-link"><?php esc_html_e( 'Browse Docs', 'kadence-blocks' ); ?></a>
-								</div>
+						</div>
+						<div class="support-section sidebar-section components-panel">
+							<div class="components-panel__body is-opened">
+								<h2><?php esc_html_e( 'Documentation', 'kadence' ); ?></h2>
+								<p><?php esc_html_e( 'Need help? We have a knowledge base full of articles to get you started.', 'kadence' ); ?></p>
+								<a href="https://www.kadencewp.com/kadence-blocks/documentation/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-link"><?php esc_html_e( 'Browse Docs', 'kadence' ); ?></a>
 							</div>
-							<div class="support-section sidebar-section components-panel">
-								<div class="components-panel__body is-opened">
-									<h2><?php esc_html_e( 'Support', 'kadence-blocks' ); ?></h2>
-									<p><?php esc_html_e( 'Have a question, we are happy to help! Get in touch with our support team.', 'kadence-blocks' ); ?></p>
-									<a href="https://www.kadencewp.com/free-support/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-link"><?php esc_html_e( 'Submit a Ticket', 'kadence-blocks' ); ?></a>
-								</div>
+						</div>
+						<div class="support-section sidebar-section components-panel">
+							<div class="components-panel__body is-opened">
+								<h2><?php esc_html_e( 'Support', 'kadence' ); ?></h2>
+								<p><?php esc_html_e( 'Have a question, we are happy to help! Get in touch with our support team.', 'kadence' ); ?></p>
+								<a href="https://www.kadencewp.com/free-support/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-link"><?php esc_html_e( 'Submit a Ticket', 'kadence' ); ?></a>
 							</div>
-						<?php } ?>
+						</div>
 						<?php do_action( 'kadence_blocks_dash_below_side_panel' ); ?>
 					</div>
 				</div>
 			</div>
 		</div>
 		<?php
-	}
-	/**
-	 * Admin Pro Kadence Notice.
-	 */
-	public function admin_pro_kadence_notice() {
-		if ( ! class_exists( 'Kadence_Blocks_Pro' ) ) {
-			?>
-			<div class="pro-section sidebar-section components-panel">
-				<div class="components-panel__body is-opened">
-					<h2><?php esc_html_e( 'Kadence Blocks Pro', 'kadence-blocks' ); ?></h2>
-					<ul>
-						<li><?php esc_html_e( '10 Pro Blocks', 'kadence-blocks' ); ?></li>
-						<li><?php esc_html_e( 'Pro Block Addons', 'kadence-blocks' ); ?></li>
-						<li><?php esc_html_e( 'Dynamic Content', 'kadence-blocks' ); ?></li>
-						<li><?php esc_html_e( 'Custom Icons', 'kadence-blocks' ); ?></li>
-						<li><?php esc_html_e( 'Custom Fonts', 'kadence-blocks' ); ?></li>
-						<li><?php esc_html_e( 'Premium Design Library', 'kadence-blocks' ); ?></li>
-					</ul>
-					<a href="https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-btn-link"><?php esc_html_e( 'Upgrade Kadence Blocks', 'kadence-blocks' ); ?></a>
-				</div>
-			</div>
-			<?php
-		}
 	}
 	/**
 	 * Get array of Kadence Blocks.
@@ -878,8 +841,8 @@ class Kadence_Blocks_Settings {
 			),
 			'kadence/advancedheading'      => array(
 				'slug'  => 'kadence/advancedheading',
-				'name'  => __( 'Advanced Text', 'kadence-blocks' ),
-				'desc'  => __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
+				'name'  => __( 'Advanced Heading', 'kadence-blocks' ),
+				'desc'  => __( 'Transform your headings to Advanced Headings and customize the font family (even google fonts), color, and size.', 'kadence-blocks' ),
 				'image' => KADENCE_BLOCKS_URL . 'dist/settings/img/heading.jpg',
 			),
 			'kadence/tabs'      => array(

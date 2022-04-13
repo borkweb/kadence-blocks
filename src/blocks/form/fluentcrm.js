@@ -11,8 +11,6 @@
 import Select from 'react-select';
 const { addQueryArgs } = wp.url;
 const { apiFetch } = wp;
-import KadencePanelBody from '../../components/KadencePanelBody';
-
 /**
  * Internal block libraries
  */
@@ -22,7 +20,9 @@ const {
 	Fragment,
 } = wp.element;
 const {
+	PanelBody,
 	ToggleControl,
+	Button,
 	Spinner,
 	SelectControl,
 } = wp.components;
@@ -129,10 +129,9 @@ class FluentCRMControls extends Component {
 		const hasFields = Array.isArray( this.state.listFields ) && this.state.listFields.length;
 		const hasTags = Array.isArray( this.state.listTags ) && this.state.listTags.length;
 		return (
-			<KadencePanelBody
+			<PanelBody
 				title={ __( 'FluentCRM Settings', 'kadence-blocks-pro' ) }
 				initialOpen={ false }
-				panelName={ 'kb-fluent-crm-settings' }
 			>
 				{ ! isActive && (
 					<Fragment>{ __( 'FluentCRM is not setup/active.', 'kadence-blocks-pro' ) }</Fragment>
@@ -251,7 +250,7 @@ class FluentCRMControls extends Component {
 						) }
 					</Fragment>
 				) }
-			</KadencePanelBody>
+			</PanelBody>
 		);
 	}
 }

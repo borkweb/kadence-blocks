@@ -10,10 +10,10 @@ import map from 'lodash/map';
 /**
  * Internal dependencies
  */
-import PopColorControl from '../../components/color/pop-color-control';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import TypographyControls from '../../components/typography/typography-control';
 import KadenceRange from '../../kadence-range-control';
 import MeasurementControls from '../../measurement-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
 
 /**
  * WordPress dependencies
@@ -22,8 +22,18 @@ import { __ } from '@wordpress/i18n';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
 const {
+	TextControl,
+	SelectControl,
+	PanelBody,
+	RangeControl,
+	ToggleControl,
+	BaseControl,
 	ButtonGroup,
 	Button,
+	ColorPicker,
+	TextareaControl,
+	CheckboxControl,
+	Tooltip,
 	TabPanel,
 	Dashicon
 } = wp.components;
@@ -107,11 +117,9 @@ class Inspector extends Component {
 		return (
 			<Fragment>
 				<InspectorControls>
-					<KadencePanelBody
+					<PanelBody
 						title={ __( 'Container Settings' ) }
-						initialOpen={ false }
-						panelName={ 'kb-restaurant-container' }
-					>
+						initialOpen={ false }>
 
 						<h2 className="kt-heading-size-title">{ __( 'Menu Title Align' ) }</h2>
 						<TabPanel className="kt-size-tabs kb-sidebar-alignment"
@@ -262,20 +270,20 @@ class Inspector extends Component {
 										if ( 'hover' === tab.name ) {
 											tabout = (
 												<Fragment>
-													<PopColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Hover Background' ) }
-														value={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
-														default={ '#f2f2f2' }
+														colorValue={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
+														colorDefault={ '#f2f2f2' }
 														opacityValue={ containerHoverBackgroundOpacity }
-														onChange={ value => setAttributes( { containerHoverBackground: value } ) }
+														onColorChange={ value => setAttributes( { containerHoverBackground: value } ) }
 														onOpacityChange={ value => setAttributes( { containerHoverBackgroundOpacity: value } ) }
 													/>
-													<PopColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Hover Border' ) }
-														value={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
-														default={ '#eeeeee' }
+														colorValue={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
+														colorDefault={ '#eeeeee' }
 														opacityValue={ containerHoverBorderOpacity }
-														onChange={ value => setAttributes( { containerHoverBorder: value } ) }
+														onColorChange={ value => setAttributes( { containerHoverBorder: value } ) }
 														onOpacityChange={ value => setAttributes( { containerHoverBorderOpacity: value } ) }
 													/>
 												</Fragment>
@@ -283,20 +291,20 @@ class Inspector extends Component {
 										} else {
 											tabout = (
 												<Fragment>
-													<PopColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Container Background' ) }
-														value={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
-														default={ '#f2f2f2' }
+														colorValue={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
+														colorDefault={ '#f2f2f2' }
 														opacityValue={ containerBackgroundOpacity }
-														onChange={ value => setAttributes( { containerBackground: value } ) }
+														onColorChange={ value => setAttributes( { containerBackground: value } ) }
 														onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 													/>
-													<PopColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Container Border' ) }
-														value={ ( containerBorder ? containerBorder : '#eeeeee' ) }
-														default={ '#eeeeee' }
+														colorValue={ ( containerBorder ? containerBorder : '#eeeeee' ) }
+														colorDefault={ '#eeeeee' }
 														opacityValue={ containerBorderOpacity }
-														onChange={ value => setAttributes( { containerBorder: value } ) }
+														onColorChange={ value => setAttributes( { containerBorder: value } ) }
 														onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 													/>
 												</Fragment>
@@ -367,7 +375,7 @@ class Inspector extends Component {
 							min={ 0 }
 							max={ widthMax }
 						/>
-					</KadencePanelBody>
+					</PanelBody>
 	            </InspectorControls>
 	        </Fragment>
 		);

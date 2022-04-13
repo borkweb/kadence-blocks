@@ -8,7 +8,6 @@ import SvgPattern from './svg-pattern';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadencePanelBody from '../../components/KadencePanelBody'
 import PopColorControl from '../../components/color/pop-color-control';
 /**
  * Import Css
@@ -31,6 +30,7 @@ const {
 	BlockAlignmentToolbar,
 } = wp.blockEditor;
 const {
+	PanelBody,
 	ToggleControl,
 	RangeControl,
 	SelectControl,
@@ -144,10 +144,9 @@ class KadenceSpacerDivider extends Component {
 							/>
 						</BlockControls>
 						<InspectorControls>
-							<KadencePanelBody
+							<PanelBody
 								title={ __( 'Spacer Settings', 'kadence-blocks' ) }
 								initialOpen={ true }
-								panelName={ 'kb-spacer-settings' }
 							>
 								{ this.showSettings( 'spacerHeight' ) && (
 									<ResponsiveRangeControls
@@ -166,11 +165,10 @@ class KadenceSpacerDivider extends Component {
 										units={ [ 'px', 'vh' ] }
 									/>
 								) }
-							</KadencePanelBody>
-							<KadencePanelBody
+							</PanelBody>
+							<PanelBody
 								title={ __( 'Divider Settings', 'kadence-blocks' ) }
 								initialOpen={ true }
-								panelName={ 'kb-divider-settings' }
 							>
 								{ this.showSettings( 'dividerToggle' ) && (
 									<ToggleControl
@@ -265,11 +263,10 @@ class KadenceSpacerDivider extends Component {
 										/>
 									</Fragment>
 								) }
-							</KadencePanelBody>
-							<KadencePanelBody
+							</PanelBody>
+							<PanelBody
 								title={ __( 'Visibility Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
-								panelName={ 'kb-visibility-settings' }
 							>
 								<ToggleControl
 									label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
@@ -286,7 +283,7 @@ class KadenceSpacerDivider extends Component {
 									checked={ ( undefined !== vsmobile ? vsmobile : false ) }
 									onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
 								/>
-							</KadencePanelBody>
+							</PanelBody>
 						</InspectorControls>
 					</Fragment>
 				) }
@@ -394,6 +391,6 @@ export default compose( [
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
+		addUniqueID: ( value ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value ),
 	} ) ),
 ] )( KadenceSpacerDivider );
