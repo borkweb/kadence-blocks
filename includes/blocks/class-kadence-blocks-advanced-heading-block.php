@@ -143,7 +143,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			}
 		}
 		if ( isset( $attributes['textShadow'] ) && is_array( $attributes['textShadow'] ) && isset( $attributes['textShadow'][0] ) && is_array( $attributes['textShadow'][0] ) && isset( $attributes['textShadow'][0]['enable'] ) && $attributes['textShadow'][0]['enable'] ) {
-			$css->add_property( 'text-shadow', ( isset( $attributes['textShadow'][0]['hOffset'] ) ? $attributes['textShadow'][0]['hOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['vOffset'] ) ? $attributes['textShadow'][0]['vOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['blur'] ) ? $attributes['textShadow'][0]['blur'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['color'] ) ? $this->kadence_color_output( $attributes['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
+			$css->add_property( 'text-shadow', ( isset( $attributes['textShadow'][0]['hOffset'] ) ? $attributes['textShadow'][0]['hOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['vOffset'] ) ? $attributes['textShadow'][0]['vOffset'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['blur'] ) ? $attributes['textShadow'][0]['blur'] : 1 ) . 'px ' . ( isset( $attributes['textShadow'][0]['color'] ) ? $css->render_color( $attributes['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
 		}
 		$css->set_media_state( 'tablet' );
 		// Old size first.
@@ -179,6 +179,21 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->set_media_state( 'desktop' );
 
+
+		// SVG
+		if( $attributes['icon'] && in_array( $attributes['iconSide'], array( 'left', 'right') )) {
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] svg' );
+
+			$css->render_color_output( $attributes, 'iconColor', 'color' );
+			$css->render_responsive_range( $attributes,'iconSize', 'width', 'iconSizeUnit' );
+			$css->render_measure_output( $attributes, 'iconPadding', 'margin', array( 'unit_key' => 'iconSizeUnit') );
+
+			if( isset( $attributes['iconHover'] ) && $attributes['iconHover'] ) {
+				$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] svg:hover' );
+				$css->render_color_output( $attributes, 'iconColorHover', 'color' );
+			}
+
+		}
 
 		// Highlight.
 		$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] mark' );
@@ -271,9 +286,76 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		}
 		$css->set_media_state( 'desktop' );
 
+		// Icon
+		$css->set_selector( '.kt-adv-heading' . $unique_id . ' .kt-svg-advanced-heading' );
+		$css->render_responsive_range( $attributes, 'iconSize', 'font-size', 'iconSizeUnit' );
+
+
 		return $css->css_output();
 	}
 
+	/**
+	 * This block is conditionally dynamic. It's only rendered dynamically if the heading includes an icon
+	 * The RichText component does not support JSX in the value, so we can't use the Kadence icon component
+	 * in the save function.
+	 *
+	 * @param array $attributes The block attributes.
+	 *
+	 * @return string Returns the block output.
+	 */
+	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
+
+		$content = '';
+		if( isset( $attributes['wrapper'] ) && $attributes['wrapper'] ) {
+			$content .= '<div class="kb-adv-heading-wrap' . esc_attr( $unique_id ) . ' kadence-advanced-heading-wrapper ' ( $attributes['revealAnimation'] ? ' kadence-heading-clip-animation' : '' ) . '">';
+		}
+
+		if( isset( $attributes['link'] ) && $attributes['link'] ) {
+			$content = '<a href="'. $attributes['link'] .'"
+			class="kb-advanced-heading-link kt-adv-heading-link' . esc_attr( $unique_id ) .' '. ( $attributes['hls'] ? 'hls-'. $attributes['hls'] : '' ) .'"
+			' . ( $attributes['linkTarget'] ? 'target="_blank"' : '' ) . '
+			' . ( $attributes['rel'] ? 'rel="' . $attributes['rel'] . '"' : '' ) . '>';
+		}
+
+		$tagName = $this->get_tag_name( $attributes );
+
+		$content .= '<'. $tagName .' class="kt-adv-heading'. esc_attr( $unique_id ) .' wp-block-kadence-advancedheading" data-kb-block="kb-adv-heading'. esc_attr( $unique_id ) .'">';
+
+			if( $attributes['icon'] && $attributes['iconSide'] === 'left' ) {
+				$content .= $this->get_icon( $attributes );
+			}
+
+			$content .= $attributes['content'];
+
+			if( $attributes['icon'] && $attributes['iconSide'] === 'right' ) {
+				$content .= $this->get_icon( $attributes );
+			}
+
+		$content .= '</'. $tagName .'>';
+
+		if( isset( $attributes['link'] ) && $attributes['link'] ) {
+			$content .= '</a>';
+		}
+
+		if( isset( $attributes['wrapper'] ) && $attributes['wrapper'] ) {
+			$content .= '</div>';
+		}
+
+		return $content;
+	}
+
+	private function get_icon( $attributes ) {
+		$extras = ' height="'.$attributes['iconSize'][0] .'" width="'.$attributes['iconSize'][0] .'"';
+		return Kadence_Blocks_Svg_Render::render( $attributes['icon'], 'none', '2', '', false, $extras);
+	}
+
+	private function get_tag_name( $attributes ) {
+		if ( $attributes['htmlTag'] === 'heading' ) {
+			return 'h' . $attributes['level'];
+		}
+
+		return $attributes['htmlTag'];
+	}
 }
 
 Kadence_Blocks_Advancedheading_Block::get_instance();
