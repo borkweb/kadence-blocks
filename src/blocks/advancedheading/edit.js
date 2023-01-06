@@ -436,8 +436,6 @@ function KadenceAdvancedHeading( props ) {
 				paddingRight : ( previewIconPaddingRight ? getSpacingOptionOutput( previewIconPaddingRight, iconPaddingUnit ) : undefined ),
 				paddingBottom: ( previewIconPaddingBottom ? getSpacingOptionOutput( previewIconPaddingBottom, iconPaddingUnit ) : undefined ),
 				paddingLeft  : ( previewIconPaddingLeft ? getSpacingOptionOutput( previewIconPaddingLeft, iconPaddingUnit ) : undefined ),
-				display		 : 'inline',
-				verticalAlign: iconVerticalAlign,
 			}}/>
 		);
 
@@ -445,6 +443,10 @@ function KadenceAdvancedHeading( props ) {
 	const dynamicHeadingContent = (
 			<TagHTML
 				style={{
+					display: 'flex',
+					alignItems: iconVerticalAlign,
+					justifyContent: previewAlign,
+
 					color          : color ? KadenceColorOutput( color ) : undefined,
 					fontWeight     : fontWeight,
 					fontStyle      : fontStyle,
@@ -490,40 +492,46 @@ function KadenceAdvancedHeading( props ) {
 			marginLeft: ('' !== previewMarginLeft ? getSpacingOptionOutput(previewMarginLeft, marginType) : undefined),
 			lineHeight: (previewLineHeight ? previewLineHeight + (fontHeightType ? fontHeightType : '') : undefined),
 		}}>
-			{iconSide === 'left' && renderIcon()}
+			<TagHTML style={{
+				display: 'flex',
+				alignItems: iconVerticalAlign,
+				justifyContent: previewAlign,
+			}}>
+				{iconSide === 'left' && renderIcon()}
 
-			<RichText
-				tagName={tagName}
-				allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
-				value={content}
-				onChange={(value) => setAttributes({content: value})}
-				onMerge={mergeBlocks}
-				onSplit={(value) => {
-					if (!value) {
-						return createBlock('core/paragraph');
-					}
-					return createBlock('kadence/advancedheading', {
-						...attributes,
-						content: value,
-					});
-				}}
-				onReplace={onReplace}
-				onRemove={() => onReplace([])}
-				style={{
-					color: color ? KadenceColorOutput(color) : undefined,
-					fontWeight: fontWeight,
-					fontStyle: fontStyle,
-					fontSize: (previewFontSize ? getFontSizeOptionOutput(previewFontSize, (sizeType ? sizeType : 'px')) : undefined),
-					letterSpacing: (previewLetterSpacing ? previewLetterSpacing + (letterSpacingType ? letterSpacingType : 'px') : undefined),
-					textTransform: (textTransform ? textTransform : undefined),
-					fontFamily: (typography ? renderTypography : ''),
-					textShadow: (undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].enable && textShadow[0].enable ? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) + 'px ' + (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) + 'px ' + (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) + 'px ' + (undefined !== textShadow[0].color ? KadenceColorOutput(textShadow[0].color) : 'rgba(0,0,0,0.2)') : undefined),
-				}}
-				className={classes}
-				placeholder={__('Write something…', 'kadence-blocks')}
-			/>
+				<RichText
+					allowedFormats={(link ? applyFilters('kadence.whitelist_richtext_formats', ['core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field'], 'kadence/advancedheading') : undefined)}
+					value={content}
+					onChange={(value) => setAttributes({content: value})}
+					onMerge={mergeBlocks}
+					onSplit={(value) => {
+						if (!value) {
+							return createBlock('core/paragraph');
+						}
+						return createBlock('kadence/advancedheading', {
+							...attributes,
+							content: value,
+						});
+					}}
+					onReplace={onReplace}
+					onRemove={() => onReplace([])}
+					style={{
+						color: color ? KadenceColorOutput(color) : undefined,
+						fontWeight: fontWeight,
+						fontStyle: fontStyle,
+						fontSize: (previewFontSize ? getFontSizeOptionOutput(previewFontSize, (sizeType ? sizeType : 'px')) : undefined),
+						letterSpacing: (previewLetterSpacing ? previewLetterSpacing + (letterSpacingType ? letterSpacingType : 'px') : undefined),
+						textTransform: (textTransform ? textTransform : undefined),
+						fontFamily: (typography ? renderTypography : ''),
+						textShadow: (undefined !== textShadow && undefined !== textShadow[0] && undefined !== textShadow[0].enable && textShadow[0].enable ? (undefined !== textShadow[0].hOffset ? textShadow[0].hOffset : 1) + 'px ' + (undefined !== textShadow[0].vOffset ? textShadow[0].vOffset : 1) + 'px ' + (undefined !== textShadow[0].blur ? textShadow[0].blur : 1) + 'px ' + (undefined !== textShadow[0].color ? KadenceColorOutput(textShadow[0].color) : 'rgba(0,0,0,0.2)') : undefined),
+					}}
+					className={classes}
+					placeholder={__('Write something…', 'kadence-blocks')}
+				/>
 
-			{iconSide === 'right' && renderIcon()}
+				{iconSide === 'right' && renderIcon()}
+
+			</TagHTML>
 
 		</div>
 	);
@@ -548,7 +556,7 @@ function KadenceAdvancedHeading( props ) {
 	} );
 
 	return (
-		<div {...blockProps} style={ { textAlign: previewAlign } }>
+		<div {...blockProps} style={{}}>
 			<style>
 				{`.kt-adv-heading${uniqueID} mark, .kt-adv-heading${uniqueID}.rich-text:focus mark[data-rich-text-format-boundary] {
 						color: ${KadenceColorOutput( markColor )};
@@ -969,23 +977,22 @@ function KadenceAdvancedHeading( props ) {
 										label={__( 'Icon Location', 'kadence-blocks' )}
 										value={iconSide}
 										options={[
-											{ value: 'right', label: __( 'Right' ) },
 											{ value: 'left', label: __( 'Left' ) },
+											{ value: 'right', label: __( 'Right' ) },
 										]}
 										onChange={value => {
 											setAttributes( { iconSide: value } );
 										}}
 									/>
 									<SelectControl
-										label={__( 'Icon Vertical Align', 'kadence-blocks' )}
+										label={__( 'Vertical Alignment', 'kadence-blocks' )}
 										value={iconVerticalAlign}
 										options={[
 											{ value: 'unset', label: __( 'Unset' ) },
 											{ value: 'baseline', label: __( 'Baseline' ) },
-											{ value: 'bottom', label: __( 'Bottom' ) },
-											{ value: 'middle', label: __( 'Middle' ) },
-											{ value: 'text-bottom', label: __( 'Text Bottom' ) },
-											{ value: 'text-top', label: __( 'Text Top' ) },
+											{ value: 'center', label: __( 'Center' ) },
+											{ value: 'end', label: __( 'End' ) },
+											{ value: 'start', label: __( 'Start' ) },
 										]}
 										onChange={value => {
 											setAttributes( { iconVerticalAlign: value } );
