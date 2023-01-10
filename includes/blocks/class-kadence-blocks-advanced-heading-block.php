@@ -112,7 +112,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['typography'] ) ) {
 			$google = isset( $attributes['googleFont'] ) && $attributes['googleFont'] ? true : false;
 			$google = $google && ( isset( $attributes['loadGoogleFont'] ) && $attributes['loadGoogleFont'] || ! isset( $attributes['loadGoogleFont'] ) ) ? true : false;
-			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google, $attributes['fontVariant'] ) );
+			$variant = isset( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : null;
+			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google, $variant ) );
 		}
 		if ( ! empty( $attributes['textTransform'] ) ) {
 			$css->add_property( 'text-transform', $attributes['textTransform'] );
@@ -181,10 +182,12 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 
 		// SVG
-		if( $attributes['icon'] && in_array( $attributes['iconSide'], array( 'left', 'right') )) {
+		if( !empty( $attributes['icon'] ) ) {
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
 			$css->add_property( 'display', 'flex' );
-			$css->add_property( 'justify-content', $attributes['align'] );
+			if( isset( $attributes['align'] ) ) {
+				$css->add_property( 'justify-content', $attributes['align'] );
+			}
 
 			if( !empty( $attributes['tabletAlign'] ) ) {
 				$css->set_media_state( 'tablet' );
@@ -236,7 +239,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['markTypography'] ) ) {
 			$google = isset( $attributes['markGoogleFont'] ) && $attributes['markGoogleFont'] ? true : false;
 			$google = $google && ( isset( $attributes['markLoadGoogleFont'] ) && $attributes['markLoadGoogleFont'] || ! isset( $attributes['markLoadGoogleFont'] ) ) ? true : false;
-			$css->add_property( 'font-family', $css->render_font_family( $attributes['markTypography'], $google, $attributes['markFontVariant'] ) );
+			$variant = isset( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : null;
+			$css->add_property( 'font-family', $css->render_font_family( $attributes['markTypography'], $google, $variant ) );
 		}
 		if ( ! empty( $attributes['markFontWeight'] ) ) {
 			$css->add_property( 'font-weight', $css->render_font_weight( $attributes['markFontWeight'] ) );
@@ -343,7 +347,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 
 		$content .= '<'. $tagName .' class="kt-adv-heading'. esc_attr( $unique_id ) .' wp-block-kadence-advancedheading" data-kb-block="kb-adv-heading'. esc_attr( $unique_id ) .'">';
 
-			if( $attributes['icon'] && $attributes['iconSide'] === 'left' ) {
+			if( $attributes['icon'] && ( !isset( $attributes['iconSide'] ) || ( isset($attributes['iconSide']) && $attributes['iconSide'] === 'left' ) ) ) {
 				$content .= $this->get_icon( $attributes );
 			}
 
