@@ -208,7 +208,8 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			}
 
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] svg' );
-
+			$css->add_property( 'width', '1em');
+			$css->add_property( 'height', '1em');
 			$css->render_color_output( $attributes, 'iconColor', 'color' );
 			$css->render_responsive_range( $attributes,'iconSize', 'font-size', 'iconSizeUnit' );
 			$css->render_measure_output( $attributes, 'iconPadding', 'margin', array( 'unit_key' => 'iconSizeUnit') );
@@ -318,69 +319,6 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		$css->set_media_state( 'desktop' );
 
 		return $css->css_output();
-	}
-
-	/**
-	 * This block is conditionally dynamic. It's only rendered dynamically if the heading includes an icon
-	 * The RichText component does not support JSX in the value, so we can't use the Kadence icon component
-	 * in the save function.
-	 *
-	 * @param array $attributes The block attributes.
-	 *
-	 * @return string Returns the block output.
-	 */
-	public function build_html( $attributes, $unique_id, $content, $block_instance ) {
-
-		$content = '';
-		if( isset( $attributes['wrapper'] ) && $attributes['wrapper'] ) {
-			$content .= '<div class="kb-adv-heading-wrap' . esc_attr( $unique_id ) . ' kadence-advanced-heading-wrapper ' ( $attributes['revealAnimation'] ? ' kadence-heading-clip-animation' : '' ) . '">';
-		}
-
-		if( isset( $attributes['link'] ) && $attributes['link'] ) {
-			$content = '<a href="'. $attributes['link'] .'"
-			class="kb-advanced-heading-link kt-adv-heading-link' . esc_attr( $unique_id ) .' '. ( $attributes['hls'] ? 'hls-'. $attributes['hls'] : '' ) .'"
-			' . ( $attributes['linkTarget'] ? 'target="_blank"' : '' ) . '
-			' . ( $attributes['rel'] ? 'rel="' . $attributes['rel'] . '"' : '' ) . '>';
-		}
-
-		$tagName = $this->get_tag_name( $attributes );
-
-		$content .= '<'. $tagName .' class="kt-adv-heading'. esc_attr( $unique_id ) .' wp-block-kadence-advancedheading" data-kb-block="kb-adv-heading'. esc_attr( $unique_id ) .'">';
-
-			if( $attributes['icon'] && ( !isset( $attributes['iconSide'] ) || ( isset($attributes['iconSide']) && $attributes['iconSide'] === 'left' ) ) ) {
-				$content .= $this->get_icon( $attributes );
-			}
-
-			$content .= $attributes['content'];
-
-			if( $attributes['icon'] && $attributes['iconSide'] === 'right' ) {
-				$content .= $this->get_icon( $attributes );
-			}
-
-		$content .= '</'. $tagName .'>';
-
-		if( isset( $attributes['link'] ) && $attributes['link'] ) {
-			$content .= '</a>';
-		}
-
-		if( isset( $attributes['wrapper'] ) && $attributes['wrapper'] ) {
-			$content .= '</div>';
-		}
-
-		return $content;
-	}
-
-	private function get_icon( $attributes ) {
-		$extras = ' height="1em" width="1em"';
-		return Kadence_Blocks_Svg_Render::render( $attributes['icon'], 'none', '2', '', false, $extras);
-	}
-
-	private function get_tag_name( $attributes ) {
-		if ( $attributes['htmlTag'] === 'heading' ) {
-			return 'h' . $attributes['level'];
-		}
-
-		return $attributes['htmlTag'];
 	}
 }
 
