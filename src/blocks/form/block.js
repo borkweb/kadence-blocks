@@ -204,6 +204,12 @@ registerBlockType( 'kadence/form', {
 					{ honeyPot && (
 						<input className="kadence-blocks-field verify" type="text" name="_kb_verify_email" autoComplete="off" aria-hidden="true" placeholder="Email" tabIndex="-1" />
 					) }
+					<noscript>
+						{ __( 'Please enable JavaScript to submit the form', 'kadence-blocks') }
+						<style>
+							{ '.kadence-form-' + uniqueID + ' .kadence-blocks-form-field.kb-submit-field { display: none; }' }
+						</style>
+					</noscript>
 					<div className={ submitClassName }>
 						{ submitLabel && (
 							<span id={ `kb_submit_label_${ uniqueID }` } className="screen-reader-text kb-submit-desc-label">{ submitLabel }</span>
