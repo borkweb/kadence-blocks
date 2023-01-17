@@ -20,8 +20,10 @@ import {
 	MeasurementControls,
 	InspectorControlTabs,
 	KadenceBlockDefaults,
+	KadenceInspectorControls,
 	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes,
 } from '@kadence/components';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
@@ -66,8 +68,7 @@ import {
 	CheckboxControl,
 	SelectControl,
 	TabPanel,
-	ExternalLink,
-	IconButton
+	ExternalLink
 } from '@wordpress/components';
 
 import {
@@ -282,6 +283,8 @@ function KadenceForm( props ) {
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const marginMouseOver = mouseOverVisualizer();
+
+	const nonTransAttrs = [ 'postID' ];
 
 	const deselectField = () => {
 		setSelectedField( null );
@@ -935,23 +938,23 @@ function KadenceForm( props ) {
 										onChange={( text ) => saveFieldsOptions( { label: text, value: text }, index, n )}
 									/>
 									<div className="kadence-blocks-list-item__control-menu">
-										<IconButton
+										<Button
 											icon="arrow-up"
-											onClick={n === 0 ? undefined : onOptionMoveUp( n, index )}
+											onClick={() => n === 0 ? undefined : onOptionMoveUp( n, index )}
 											className="kadence-blocks-list-item__move-up"
 											label={__( 'Move Item Up' )}
 											aria-disabled={n === 0}
 											disabled={n === 0}
 										/>
-										<IconButton
+										<Button
 											icon="arrow-down"
-											onClick={( n + 1 ) === fields[ index ].options.length ? undefined : onOptionMoveDown( n, index )}
+											onClick={() => ( n + 1 ) === fields[ index ].options.length ? undefined : onOptionMoveDown( n, index )}
 											className="kadence-blocks-list-item__move-down"
 											label={__( 'Move Item Down' )}
 											aria-disabled={( n + 1 ) === fields[ index ].options.length}
 											disabled={( n + 1 ) === fields[ index ].options.length}
 										/>
-										<IconButton
+										<Button
 											icon="no-alt"
 											onClick={() => removeOptionItem( n, index )}
 											className="kadence-blocks-list-item__remove"
@@ -1629,8 +1632,15 @@ function KadenceForm( props ) {
 					value={hAlign}
 					onChange={value => setAttributes( { hAlign: value } )}
 				/>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ nonTransAttrs } 
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
 			</BlockControls>
-			<InspectorControls>
+			<KadenceInspectorControls blockSlug={ 'kadence/form' }>
 
 				<InspectorControlTabs
 					panelName={'form'}
@@ -3561,10 +3571,10 @@ function KadenceForm( props ) {
 
 				{ (activeTab === 'advanced') && (
 					<>
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/form' } excludedAttrs={ [ 'postID' ] } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs } />
 					</>
 				)}
-			</InspectorControls>
+			</KadenceInspectorControls>
 			<div id={`animate-id${uniqueID}`} className={`kb-form-wrap aos-animate${( hAlign ? ' kb-form-align-' + hAlign : '' )}`} data-aos={( kadenceAnimation ? kadenceAnimation : undefined )}
 				 data-aos-duration={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined )}
 				 data-aos-easing={( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined )} style={{

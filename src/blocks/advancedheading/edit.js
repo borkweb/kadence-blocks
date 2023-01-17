@@ -33,8 +33,8 @@ import {
 	TagSelect,
 	ResponsiveBorderControl,
 	KadenceIconPicker,
-	SmallResponsiveControl,
-	IconRender
+	IconRender,
+	CopyPasteAttributes,
 } from '@kadence/components';
 
 import {
@@ -53,7 +53,6 @@ import {
 /**
  * Block dependencies
  */
-import HeadingStyleCopyPaste from './copy-paste-style';
 import './markformat';
 
 /**
@@ -551,6 +550,7 @@ function KadenceAdvancedHeading( props ) {
 		'kb-is-heading' : htmlTag && htmlTag === 'heading',
 		'kb-adv-text'   : true,
 	});
+	const nonTransAttrs = [ 'content' ];
 	const blockProps = useBlockProps( {
 		className: wrapperClasses,
 	} );
@@ -660,9 +660,12 @@ function KadenceAdvancedHeading( props ) {
 						setAttributes( { align: nextAlign } );
 					}}
 				/>
-				<HeadingStyleCopyPaste
-					onPaste={value => setAttributes( value )}
-					blockAttributes={attributes}
+				<CopyPasteAttributes
+					attributes={ attributes }
+					excludedAttrs={ nonTransAttrs } 
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 				/>
 			</BlockControls>
 			{showSettings( 'allSettings', 'kadence/advancedheading' ) && (
@@ -751,7 +754,7 @@ function KadenceAdvancedHeading( props ) {
 										onChange={value => setAttributes( { linkStyle: value } )}
 									/>
 									<URLInputControl
-										label={__( 'Heading Wrap Link', 'kadence-blocks' )}
+										label={__( 'Text Wrap Link', 'kadence-blocks' )}
 										url={link}
 										onChangeUrl={value => setAttributes( { link: value } )}
 										additionalControls={true}
@@ -1186,7 +1189,7 @@ function KadenceAdvancedHeading( props ) {
 								</>
 							)}
 
-							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/advancedheading' } excludedAttrs={ [ 'content' ] }  />
+							<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs }  />
 
 						</>
 

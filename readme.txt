@@ -1,10 +1,10 @@
 === Gutenberg Blocks by Kadence Blocks – Page Builder Features ===
-Contributors: britner, oakesjosh
+Contributors: britner, oakesjosh, woodardmc
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 3.0.0
+Stable tag: 3.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,8 +76,39 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 3.0.3 Alpha Version 4 =
+Release Date - TBD
+* Fix: Removing bottom divider on Row Layout
+* Fix: Variable based font sizes in countdown block
+* Fix: Video background on Row Layout
+
+= 3.0.2 Alpha Version 3 =
+Release Date: January 13th, 2023
+* Update: Searches in icon selector are now case insensitive,
+* Update: Accordion block now has responsive border & border radius.
+* Update: All sliders, carousels using splide.
+* Update: Allow icons to be removed from Accordion titles
+* Fix: Hover background color not showing on sections
+* Fix: Icons not showing in tab titles
+* Fix: "Too few arguments" Fatal error commonly seen with reusable blocks
+* Fix: Icon list block not displaying properly on front end
+* Fix: Warning when using custom font without a font variant selected
+* Fix: Warning with some mobile background settings on row layout
+* Fix: Issue where padding/margin was limited to 12px in some cases
+* Fix: Issue with font size not showing in testimonials.
+
+= 3.0.1 Alpha Version 2 =
+Release Date: January 5th, 2023
+* Update: Duplicate styles component.
+* Fix: Issue with Lightbox on non carousel Gallery.
+* Fix: Issue with 0 spacing not outputting in editor.
+* Fix: Issue with how row padding and margins conversions were handled.
+* Fix: Defaults with Info Box.
+* Fix: CSS specificity with column handles.
+* Fix: Transforms for icon list block.
+
 = 3.0.0 Alpha Version 1 =
-Release Date: December 16th, 2022
+Release Date: January 4th, 2023
 * Update: Block Settings to use a tab structure.
 * Update: Row Layout to use grid css (css file size 36kb -> 6kb).
 * Update: File Structure, build process, individual block files.
@@ -113,6 +144,13 @@ Release Date: December 16th, 2022
 * Fix: Issue when using more than 36 tabs in Tabs block.
 * Add: Ability to use decimals for start & end values in count up block.
 * Add: Ability to force specific language in reCaptchas
+
+= 2.4.22 =
+Release Date: November 17th, 2022
+* Fix: Issue with mobile background video loading.
+* Fix: Issue with undefined index: color.
+* Fix: Allow clearing border radius in image block.
+* Fix: Issue with converting list blocks to icon list blocks since 6.1
 
 = 2.4.21 =
 Release Date: November 11th, 2022

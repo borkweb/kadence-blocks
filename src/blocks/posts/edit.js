@@ -22,6 +22,7 @@ import metadata from './block.json';
  */
 import {
 	getUniqueId,
+	getFontSizeOptionOutput
 } from '@kadence/helpers';
 
 /**
@@ -40,7 +41,8 @@ import {
 	TypographyControls,
 	InspectorControlTabs,
 	KadenceInspectorControls,
-	KadenceBlockDefaults
+	KadenceBlockDefaults,
+	CopyPasteAttributes
 } from '@kadence/components';
 import { dateI18n, format, __experimentalGetSettings } from '@wordpress/date';
 import {
@@ -48,6 +50,10 @@ import {
 	useEffect,
 	useState,
 } from '@wordpress/element';
+import {
+	useBlockProps,
+	BlockControls,
+} from '@wordpress/block-editor';
 import {
 	TextControl,
 	Placeholder,
@@ -170,6 +176,8 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 		getPosts();
 	}, [ postType, taxType, offsetQuery, postTax, excludeTax, allowSticky, orderBy, order, categories, tags, postsToShow ] );
 
+	const blockProps = useBlockProps();
+
 	const taxonomyList = [];
 	const taxonomyOptions = [];
 	const taxonomyFilterOptions = [];
@@ -239,6 +247,14 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 
 	const settingspanel = (
 		<>
+			<BlockControls>
+				<CopyPasteAttributes
+					attributes={ attributes }
+					defaultAttributes={ metadata['attributes'] } 
+					blockSlug={ metadata['name'] } 
+					onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+				/>
+			</BlockControls>
 			<KadenceInspectorControls blockSlug={ 'kadence/posts' }>
 
 				<InspectorControlTabs
@@ -840,7 +856,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 							)}
 						</KadencePanelBody>
 
-						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/posts' } />
+						<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } />
 					</>
 				}
 			</KadenceInspectorControls>
@@ -848,7 +864,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 	);
 	if ( !loaded ) {
 		return (
-			<>
+			<div { ...blockProps }>
 				{settingspanel}
 				<Placeholder
 					icon="admin-post"
@@ -857,12 +873,12 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 
 					<Spinner/>
 				</Placeholder>
-			</>
+			</div>
 		);
 	}
 	if ( !hasPosts ) {
 		return (
-			<>
+			<div { ...blockProps }>
 				{settingspanel}
 				<Placeholder
 					icon="admin-post"
@@ -873,7 +889,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						<Spinner/> :
 						__( 'No posts found.', 'kadence-blocks' )}
 				</Placeholder>
-			</>
+			</div>
 		);
 	}
 	// Removing posts from display should be instant.
@@ -942,7 +958,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 						<HtmlTagOut
 							className="entry-title"
 							style={{
-								fontSize     : ( titleSize ? titleSize + titleFont[ 0 ].sizeType : undefined ),
+								fontSize     : ( titleSize ? getFontSizeOptionOutput( titleSize, titleFont[ 0 ].sizeType ) : undefined ),
 								lineHeight   : ( titleLineHeight ? titleLineHeight + titleFont[ 0 ].lineType : undefined ),
 								letterSpacing: ( titleLetterSpacing ? titleLetterSpacing + titleFont[ 0 ].letterType : undefined ),
 								textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
@@ -1073,7 +1089,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 		);
 	};
 	return (
-		<>
+		<div { ...blockProps }>
 			{settingspanel}
 			<div
 				className={`${className} kb-posts kb-posts-id-${uniqueID} ${columnsClass} grid-cols content-wrap kb-posts-style-${loopStyle ? loopStyle : 'boxed'} item-image-style-${columns === 1 ? alignImage : 'above'}`}>
@@ -1081,7 +1097,7 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 					renderPosts( post, i ),
 				)}
 			</div>
-		</>
+		</div>
 	);
 }
 

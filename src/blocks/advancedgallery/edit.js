@@ -38,7 +38,8 @@ import {
 	KadenceBlockDefaults,
 	ResponsiveRangeControls,
 	ResponsiveMeasureRangeControl,
-	SpacingVisualizer
+	SpacingVisualizer,
+	CopyPasteAttributes
 } from '@kadence/components';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { applyFilters } from '@wordpress/hooks';
@@ -572,7 +573,7 @@ function GalleryEdit( props ) {
 		pagination    : ( dotStyle === 'none' ? false : true ),
 		arrows        : ( arrowStyle === 'none' ? false : true ),
 		speed         : transSpeed,
-		draggable     : false,
+		drag     : false,
 		focus        : 0,
 		perPage      : previewColumns,
 		interval     : autoSpeed,
@@ -603,7 +604,7 @@ function GalleryEdit( props ) {
 		rewind       : true,
 		fade          : true,
 		speed         : transSpeed,
-		draggable     : false,
+		drag     : false,
 		interval      : autoSpeed,
 		autoplay      : autoPlay,
 	};
@@ -613,7 +614,7 @@ function GalleryEdit( props ) {
 		rewind       : true,
 		fade          : true,
 		speed         : transSpeed,
-		draggable     : false,
+		drag     : false,
 		pagination   : false,
 		autoplaySpeed : autoSpeed,
 		autoplay      : autoPlay,
@@ -632,6 +633,7 @@ function GalleryEdit( props ) {
 		isNavigation : true,
 		arrows       : true,
 	};
+	const nonTransAttrs = ['images', 'imagesDynamic'];
 	const controls = (
 		<BlockControls>
 			{hasImages && !dynamicSource && (
@@ -653,6 +655,13 @@ function GalleryEdit( props ) {
 					/>
 				</ToolbarGroup>
 			)}
+			<CopyPasteAttributes
+				attributes={ attributes }
+				excludedAttrs={ nonTransAttrs } 
+				defaultAttributes={ metadata['attributes'] } 
+				blockSlug={ metadata['name'] } 
+				onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
+			/>
 		</BlockControls>
 	);
 	const typeLabel = galleryTypes.filter( ( item ) => ( item.value === type ) );
@@ -1504,7 +1513,7 @@ function GalleryEdit( props ) {
 								attributes={attributes}
 								defaultAttributes={metadata['attributes']}
 								blockSlug={'kadence/advancedgallery'}
-								excludedAttrs={['images', 'imagesDynamic']}
+								excludedAttrs={nonTransAttrs}
 							/>
 						</>
 					)}

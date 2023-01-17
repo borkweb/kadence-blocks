@@ -112,7 +112,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['typography'] ) ) {
 			$google = isset( $attributes['googleFont'] ) && $attributes['googleFont'] ? true : false;
 			$google = $google && ( isset( $attributes['loadGoogleFont'] ) && $attributes['loadGoogleFont'] || ! isset( $attributes['loadGoogleFont'] ) ) ? true : false;
-			$variant = isset( $attributes['fontVariant'] ) ? $attributes['fontVariant'] : null;
+			$variant = !empty( $attributes['variant'] ) ? $attributes['variant'] : null;
 			$css->add_property( 'font-family', $css->render_font_family( $attributes['typography'], $google, $variant ) );
 		}
 		if ( ! empty( $attributes['textTransform'] ) ) {
@@ -137,7 +137,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 				if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
 						$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 					}
-			} else if ( strpos( $attributes['color'], 'palette' ) === 0 ) {
+			} else if ( strpos( $attributes['background'], 'palette' ) === 0 ) {
 				$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
 			} else if ( isset( $attributes['backgroundColorClass'] ) && empty( $attributes['backgroundColorClass'] ) || ! isset( $attributes['backgroundColorClass'] ) ) {
 				$css->add_property( 'background-color', $css->render_color( $attributes['background'] ) );
@@ -166,14 +166,14 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		// Old size first.
 		if ( ! empty( $attributes['mobileSize'] ) ) {
 			$css->add_property( 'font-size', $attributes['mobileSize'] . ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) );
-		} else if ( ! empty( $attributes['fontSize'][1] ) ) {
-			$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][1], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
+		} else if ( ! empty( $attributes['fontSize'][2] ) ) {
+			$css->add_property( 'font-size', $css->get_font_size( $attributes['fontSize'][2], ( ! isset( $attributes['sizeType'] ) ? 'px' : $attributes['sizeType'] ) ) );
 		}
 		// Old line height first.
 		if ( ! empty( $attributes['mobileLineHeight'] ) ) {
 			$css->add_property( 'line-height', $attributes['mobileLineHeight'] . ( empty( $attributes['lineType'] ) ? 'px' : $attributes['lineType'] ) );
-		} else if ( ! empty( $attributes['fontHeight'][1] ) ) {
-			$css->add_property( 'line-height', $attributes['fontHeight'][1] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
+		} else if ( ! empty( $attributes['fontHeight'][2] ) ) {
+			$css->add_property( 'line-height', $attributes['fontHeight'][2] . ( empty( $attributes['fontHeightType'] ) ? '' : $attributes['fontHeightType'] ) );
 		}
 		if ( ! empty( $attributes['mobileAlign'] ) ) {
 			$css->add_property( 'text-align', $attributes['mobileAlign'] . '!important' );
@@ -240,7 +240,7 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 		if ( ! empty( $attributes['markTypography'] ) ) {
 			$google = isset( $attributes['markGoogleFont'] ) && $attributes['markGoogleFont'] ? true : false;
 			$google = $google && ( isset( $attributes['markLoadGoogleFont'] ) && $attributes['markLoadGoogleFont'] || ! isset( $attributes['markLoadGoogleFont'] ) ) ? true : false;
-			$variant = isset( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : null;
+			$variant = !empty( $attributes['markFontVariant'] ) ? $attributes['markFontVariant'] : null;
 			$css->add_property( 'font-family', $css->render_font_family( $attributes['markTypography'], $google, $variant ) );
 		}
 		if ( ! empty( $attributes['markFontWeight'] ) ) {
@@ -288,14 +288,16 @@ class Kadence_Blocks_Advancedheading_Block extends Kadence_Blocks_Abstract_Block
 			$css->add_property( 'color', $css->render_color( $attributes['linkHoverColor'] ) );
 		}
 		if ( ! empty( $attributes['linkStyle'] ) ) {
-			$css->set_selector( '.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a, .kt-adv-heading-link' . $unique_id );
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a, a.kb-advanced-heading-link.kt-adv-heading-link' . $unique_id );
 			if ( 'none' === $attributes['linkStyle'] ) {
 				$css->add_property( 'text-decoration', 'none' );
 			} else if ( $attributes['linkStyle'] === 'underline' ) {
 				$css->add_property( 'text-decoration', 'underline' );
+				$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a:hover, a.kb-advanced-heading-link.kt-adv-heading-link' . $unique_id . ':hover' );
+				$css->add_property( 'text-decoration', 'underline' );
 			} else if ( $attributes['linkStyle'] === 'hover_underline' ) {
 				$css->add_property( 'text-decoration', 'none' );
-				$css->set_selector( '.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a:hover, .kt-adv-heading-link' . $unique_id . ':hover' );
+				$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"] a:hover, a.kb-advanced-heading-link.kt-adv-heading-link' . $unique_id . ':hover' );
 				$css->add_property( 'text-decoration', 'underline' );
 			}
 		}

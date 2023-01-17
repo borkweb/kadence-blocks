@@ -47,6 +47,7 @@ import {
 	SpacingVisualizer,
 	ColorGroup,
 	HoverToggleControl,
+	CopyPasteAttributes
 } from '@kadence/components';
 
 /**
@@ -63,11 +64,6 @@ import {
 	getUniqueId,
 	getInQueryBlock,
 } from '@kadence/helpers';
-
-/**
- * Blocks Specific.
- */
-import ColumnStyleCopyPaste from './copy-paste-style';
 
 import './editor.scss';
 import metadata from './block.json';
@@ -499,6 +495,7 @@ function SectionEdit( {
 			},
 		],
 	];
+	const nonTransAttrs = [ 'images', 'imagesDynamic' ];
 	const innerClasses = classnames( {
 		'kadence-inner-column-inner': true,
 		'aos-animate': true,
@@ -612,9 +609,12 @@ function SectionEdit( {
 							label={ __( 'Vertical Align', 'kadence-blocks' )  }
 							controls={ verticalAlignOptions }
 						/>
-						<ColumnStyleCopyPaste
-							onPaste={ value => setAttributes( value ) }
-							blockAttributes={ attributes }
+						<CopyPasteAttributes
+							attributes={ attributes }
+							excludedAttrs={ nonTransAttrs } 
+							defaultAttributes={ metadata['attributes'] } 
+							blockSlug={ metadata['name'] } 
+							onPaste={ attributesToPaste => setAttributes( attributesToPaste ) }
 						/>
 					</BlockControls>
 					<InspectorControls>
@@ -1021,7 +1021,7 @@ function SectionEdit( {
 									/>
 								</KadencePanelBody>
 
-								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ 'kadence/column' } excludedAttrs={ [ 'images', 'imagesDynamic' ] } />
+								<KadenceBlockDefaults attributes={attributes} defaultAttributes={metadata['attributes']} blockSlug={ metadata['name'] } excludedAttrs={ nonTransAttrs }  />
 
 							</>
 						}
